@@ -40,16 +40,15 @@ Build a **production-grade React Native app** covering ALL skills required for *
 **Primary Skills Learned:**
 
 #### State Management
-- ✅ Redux Toolkit (global state)
+- ✅ Zustand (global state - simple & powerful)
 - ✅ React Query (server state, caching, mutations)
-- ✅ Zustand (lightweight local state)
 - ✅ MMKV (high-performance offline storage)
-- ✅ Global Cache Strategy (hybrid approach)
+- ✅ Global Cache Strategy (React Query + MMKV)
 
 #### TypeScript
 - ✅ Strict typing (ViewStyle, TextStyle, ImageStyle)
 - ✅ Advanced types (generics, utility types)
-- ✅ Type-safe Redux & React Query
+- ✅ Type-safe Zustand stores & React Query
 
 #### UI/UX
 - ✅ Atomic Design Pattern (atoms → molecules → organisms → templates)
@@ -128,17 +127,16 @@ src/components/
 - ✅ Memory leak prevention
 
 #### Real-Time Features
-- ✅ Socket.io (real-time likes, comments, notifications)
-- ✅ Supabase Realtime (alternative approach)
+- ✅ Supabase Realtime (real-time likes, comments, notifications)
 - ✅ Optimistic updates
-- ✅ Conflict resolution
+- ✅ Real-time subscriptions
 
-#### GraphQL
-- ✅ Apollo Client setup
-- ✅ Queries, Mutations, Subscriptions
-- ✅ GraphQL vs REST comparison
-- ✅ Cache normalization
-- ✅ Pagination with GraphQL
+#### REST API Integration
+- ✅ Supabase REST API
+- ✅ Custom API endpoints
+- ✅ Pagination patterns
+- ✅ Error handling
+- ✅ Request/response interceptors
 
 #### Advanced Interactions
 - ✅ Reanimated (smooth animations)
@@ -164,9 +162,9 @@ src/components/
 5. Notifications (real-time)
 
 **Tech Decisions:**
-- Use GraphQL for feed data (learn GraphQL)
-- Use Socket.io for real-time interactions (shows depth beyond Supabase)
-- Use REST for simpler endpoints (hybrid approach)
+- Use REST API for all data operations (Supabase REST API)
+- Use Supabase Realtime for live updates (likes, comments, new posts)
+- Focus on mastering one approach well rather than spreading thin
 
 ---
 
@@ -183,10 +181,10 @@ src/components/
 
 #### Offline-First Architecture
 - ✅ NetInfo (connectivity detection)
-- ✅ Sync queue management
-- ✅ Conflict resolution strategies
+- ✅ Basic sync queue management
 - ✅ Optimistic UI updates
-- ✅ Background sync
+- ✅ Background sync (when online)
+- ✅ Last-write-wins strategy (simple conflict handling)
 
 #### Advanced Data Management
 - ✅ Complex state structures
@@ -201,9 +199,9 @@ src/components/
 - ✅ Version control concepts
 
 #### Real-Time Collaboration
-- ✅ GraphQL Subscriptions (real-time document updates)
-- ✅ Operational transforms (basic)
-- ✅ Multi-user editing indicators
+- ✅ Supabase Realtime (real-time budget updates)
+- ✅ Multi-user presence indicators
+- ✅ Live collaboration notifications
 
 #### Advanced Caching
 - ✅ Multi-layer cache strategy
@@ -239,7 +237,7 @@ src/components/
 - ✅ Function calling (AI triggers app actions)
 
 #### Real-Time Communication
-- ✅ WebSockets (Socket.io for chat)
+- ✅ Supabase Realtime (for chat messages)
 - ✅ Message queuing
 - ✅ Retry logic
 - ✅ Connection state management
@@ -344,12 +342,13 @@ src/components/
 - ✅ ProGuard/R8 (Android)
 - ✅ Bitcode (iOS)
 
-#### New Architecture (Fabric)
+#### New Architecture (Fabric) - PRIORITY
 - ✅ Understanding Fabric vs Old Architecture
-- ✅ Enabling New Architecture
+- ✅ Enabling New Architecture in project
 - ✅ TurboModules concepts
 - ✅ JSI (JavaScript Interface)
-- ✅ Migration considerations
+- ✅ Benefits & migration considerations
+- ✅ Testing with new architecture enabled
 
 **Additional Polish:**
 - App icon & splash screen
@@ -387,10 +386,8 @@ src/components/
 ### State Management
 ```json
 {
-  "@reduxjs/toolkit": "^2.0.0",
-  "react-redux": "^9.0.0",
-  "@tanstack/react-query": "^5.0.0",
-  "zustand": "^4.4.0"
+  "zustand": "^4.4.0",
+  "@tanstack/react-query": "^5.0.0"
 }
 ```
 
@@ -398,10 +395,7 @@ src/components/
 ```json
 {
   "@supabase/supabase-js": "^2.38.0",
-  "@apollo/client": "^3.8.0",
-  "graphql": "^16.8.0",
-  "axios": "^1.6.0",
-  "socket.io-client": "^4.6.0"
+  "axios": "^1.6.0"
 }
 ```
 
@@ -546,7 +540,7 @@ src/components/
 2. Configure TypeScript paths
 3. Setup navigation (Stack, Tab, Drawer)
 4. Create theme constants
-5. Setup Redux + React Query
+5. Setup Zustand + React Query
 6. Configure Metro & Babel
 7. Setup Flipper debugger
 
@@ -649,7 +643,7 @@ src/modules/ai-chat/README.md
 - [ ] Setup navigation (Stack, Tabs, Drawer)
 - [ ] Create theme system
 - [ ] Install core dependencies
-- [ ] Setup Redux Toolkit
+- [ ] Setup Zustand stores
 - [ ] Setup React Query
 - [ ] Configure Supabase
 - [ ] Setup Flipper
@@ -713,22 +707,22 @@ src/modules/ai-chat/README.md
 ### 📰 Module 2: Feed (Weeks 6-8)
 **Status:** 🔴 NOT STARTED
 
-#### Week 6: GraphQL & Feed UI
-- [ ] Apollo Client setup
-- [ ] GraphQL schema design
-- [ ] Feed queries
+#### Week 6: Feed UI & REST API
+- [ ] Supabase feed table setup
+- [ ] REST API queries (React Query)
 - [ ] FlashList implementation
 - [ ] Post cards UI
 - [ ] Image posts (FastImage)
 - [ ] Infinite scroll
+- [ ] Pull-to-refresh
 
 #### Week 7: Real-Time Features
-- [ ] Socket.io setup
-- [ ] Real-time likes
+- [ ] Supabase Realtime setup
+- [ ] Real-time likes (subscriptions)
 - [ ] Real-time comments
 - [ ] Optimistic updates
 - [ ] Notification system
-- [ ] GraphQL subscriptions
+- [ ] Live post updates
 
 #### Week 8: Advanced Interactions
 - [ ] Reanimated animations
@@ -755,13 +749,13 @@ src/modules/ai-chat/README.md
 
 #### Week 10: Offline-First
 - [ ] NetInfo integration
-- [ ] Sync queue
-- [ ] Conflict resolution
+- [ ] Sync queue (basic)
+- [ ] Last-write-wins strategy
 - [ ] Background sync
 
 #### Week 11: Collaboration
-- [ ] GraphQL subscriptions (real-time)
-- [ ] Multi-user editing
+- [ ] Supabase Realtime (real-time budgets)
+- [ ] Multi-user presence
 - [ ] Reports generator
 - [ ] Module 3 testing
 
@@ -825,12 +819,11 @@ src/modules/ai-chat/README.md
 ## 🎓 Additional Learning Resources
 
 ### Must-Read Documentation
-- [ ] React Native Official Docs (New Architecture)
+- [ ] React Native Official Docs (New Architecture - Fabric)
 - [ ] React Navigation Docs
 - [ ] React Query Docs
-- [ ] Redux Toolkit Docs
-- [ ] Supabase Docs
-- [ ] Apollo GraphQL Docs
+- [ ] Zustand Docs
+- [ ] Supabase Docs (REST API + Realtime)
 
 ### YouTube Channels
 - Notjust.dev
@@ -876,8 +869,8 @@ By the end of this project, you will be able to:
 
 ### Technical Skills
 - ✅ Build production RN apps from absolute scratch
-- ✅ Make architectural decisions confidently (GraphQL vs REST, Redux vs Zustand)
-- ✅ Handle complex state management (global, server, local)
+- ✅ Make architectural decisions confidently (state management, API design)
+- ✅ Handle modern state management (Zustand + React Query)
 - ✅ Optimize app performance (60 FPS, minimal memory)
 - ✅ Integrate 15+ third-party services
 - ✅ Write clean, maintainable, testable TypeScript
@@ -983,6 +976,42 @@ All you need is:
 
 ---
 
-**Last Updated:** [Current Date]
+---
+
+## 🎁 Optional/Advanced (If Time Permits)
+
+After completing all 5 modules, if you have time and want to go deeper:
+
+### 1️⃣ **New Architecture (Fabric)** - HIGHEST PRIORITY
+- Already included in Module 5
+- Critical for modern RN jobs
+- Shows you're up-to-date with latest RN
+
+### 2️⃣ **GraphQL + Apollo Client**
+- Replace REST with GraphQL in Feed module
+- Learn queries, mutations, subscriptions
+- Compare performance with REST approach
+
+### 3️⃣ **Socket.io**
+- Add Socket.io alongside Supabase Realtime
+- Build custom WebSocket server
+- Shows deeper real-time knowledge
+
+### 4️⃣ **Advanced Testing**
+- E2E with Detox or Maestro
+- Visual regression testing
+- Performance testing
+
+### 5️⃣ **CI/CD Pipeline**
+- GitHub Actions for automated builds
+- Automated testing on PR
+- Automated deployment to TestFlight/PlayStore
+
+**Note:** These are nice-to-have. Master the core first! 🎯
+
+---
+
+**Last Updated:** 16 May 2026
 **Current Phase:** Phase 0 - Foundation Setup
 **Overall Progress:** 0% → Target: 100% in 16 weeks
+**Tech Stack:** Zustand + React Query + Supabase (REST + Realtime) + TypeScript
