@@ -1,0 +1,11 @@
+{
+    // TypeScript and JavaScript Import Settings
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    // Enable auto imports
+    "typescript.suggest.autoImports": true,
+    "javascript.suggest.autoImports": true,
+    // Path preferences
+    "typescript.preferences.importModuleSpecifierEnding": "auto",
+    "javascript.preferences.importModuleSpecifierEnding": "auto"
+}

@@ -1,10 +1,10 @@
 import { TextProps as RNTextProps } from 'react-native';
 import { TextVariantKey } from '@/theme';
 import React from 'react';
+import { colors } from '../../../theme/colors';
 
 export interface TextProps extends RNTextProps {
   /**
-   * Text variant from theme
    * @default 'bodyMedium'
    */
   variant?: TextVariantKey;
@@ -14,12 +14,10 @@ export interface TextProps extends RNTextProps {
    */
   align?: 'left' | 'center' | 'right' | 'justify';
   /**
-   * Makes text bold
    * @default false
    */
   bold?: boolean;
   /**
-   * Makes text italic
    * @default false
    */
   italic?: boolean;
