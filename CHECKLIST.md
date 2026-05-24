@@ -39,7 +39,7 @@
   ```bash
   git add .
   git commit -F .git-commit-msg-temp
-  git push origin develop
+  git push origin main
   ```
 
 ---
@@ -81,7 +81,7 @@ git status
 # Git commit
 git add .
 git commit -F .git-commit-msg-temp
-git push origin develop
+git push origin main
 ```
 
 ---
@@ -89,28 +89,32 @@ git push origin develop
 ## 🚨 IF SOMETHING GOES WRONG
 
 ### Forgot what you were doing?
+
 ```bash
 cat memories/repo/current-task.md
 git log -1
 ```
 
 ### Branch behind?
+
 ```bash
-git pull origin develop
+git pull origin main
 ```
 
 ### Merge conflict?
+
 ```bash
 # Usually in memory files - keep latest timestamp
 git add .
 git commit -m "merge: resolve conflict"
-git push origin develop
+git push origin main
 ```
 
 ### Forgot to push last night?
+
 ```bash
 # Just push now, other machine will sync
-git push origin develop
+git push origin main
 ```
 
 ---
@@ -118,11 +122,13 @@ git push origin develop
 ## 📊 WEEKLY CHECKLIST
 
 ### Sunday Evening (Planning)
+
 - [ ] Review last week's progress
 - [ ] Update `PROJECT_ROADMAP.md` if needed
 - [ ] Plan this week's tasks in `next-steps.md`
 
 ### Friday/Weekend (Review)
+
 - [ ] Update `progress.md` with week summary
 - [ ] Note overall progress %
 - [ ] Celebrate wins! 🎉

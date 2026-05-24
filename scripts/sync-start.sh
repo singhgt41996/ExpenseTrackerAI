@@ -11,17 +11,17 @@ echo ""
 BRANCH=$(git branch --show-current)
 echo "📍 Current branch: $BRANCH"
 
-if [ "$BRANCH" != "develop" ]; then
-  echo "⚠️  Warning: You're not on develop branch!"
-  read -p "Switch to develop? (y/n): " SWITCH
+if [ "$BRANCH" != "main" ]; then
+  echo "⚠️  Warning: You're not on main branch!"
+  read -p "Switch to main? (y/n): " SWITCH
   if [ "$SWITCH" = "y" ]; then
-    git checkout develop
+    git checkout main
   fi
 fi
 
 echo ""
 echo "⬇️  Pulling latest changes..."
-git pull origin develop
+git pull origin main
 
 if [ $? -eq 0 ]; then
   echo "✅ Successfully pulled latest code"

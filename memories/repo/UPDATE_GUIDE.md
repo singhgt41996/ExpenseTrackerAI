@@ -9,6 +9,7 @@
 ### After Completing ANY Task:
 
 1. **Update current-task.md**
+
    ```bash
    # Mark what you just finished
    # Update "What I Just Finished" section
@@ -17,6 +18,7 @@
    ```
 
 2. **Update progress.md**
+
    ```bash
    # Add to "Completed This Week" section
    # Update session history at bottom
@@ -24,23 +26,25 @@
    ```
 
 3. **Add to learnings.md** (if you learned something new)
+
    ```bash
    # Document any gotchas, tricks, or insights
    ```
 
 4. **Git commit with standard format**
+
    ```bash
    git add .
    git commit -m "feat: [component/feature name]
-   
+
    ✅ What was completed
    📝 Key learnings (if any)
    🎯 Next: [next task]
-   
+
    Machine: [Office/Personal Laptop]
    Time: [X hours]"
-   
-   git push origin develop
+
+   git push origin main
    ```
 
 ---
@@ -50,12 +54,14 @@
 ### When you sit down to code:
 
 1. **Pull latest changes**
+
    ```bash
    git checkout develop
-   git pull origin develop
+   git pull origin main
    ```
 
 2. **Read memory files** (in this order)
+
    - `current-task.md` - What was last done, what's next
    - `progress.md` - Overall status
    - `next-steps.md` - Week plan
@@ -83,10 +89,12 @@
 **Status:** ✅ COMPLETE / 🔄 IN PROGRESS
 
 ### Files Created/Modified:
+
 - ✅ File 1
 - ✅ File 2
 
 ### Features Implemented:
+
 - ✅ Feature 1
 - ✅ Feature 2
 
@@ -99,9 +107,11 @@
 **Location:** `[path]`
 
 ### What to Build:
+
 [Brief description]
 
 ### Key Steps:
+
 1. Step 1
 2. Step 2
 ```
@@ -110,6 +120,7 @@
 
 ```markdown
 ### [Date] ([Machine]) - [X hours]
+
 - ✅ Completed [task]
 - ✅ Completed [task]
 - 📝 Learned [key insight]
@@ -120,6 +131,7 @@
 ## 🎯 Git Commit Message Format
 
 ### Feature Complete
+
 ```
 feat: button atom component
 
@@ -137,6 +149,7 @@ Time: 2 hours
 ```
 
 ### Work in Progress
+
 ```
 wip: input atom component (partial)
 
@@ -149,6 +162,7 @@ Time: 1.5 hours
 ```
 
 ### Bug Fix
+
 ```
 fix: text component alignment on Android
 
@@ -160,6 +174,7 @@ Time: 30 min
 ```
 
 ### Documentation
+
 ```
 docs: update progress for week 1
 
@@ -174,6 +189,7 @@ Machine: Personal Laptop
 ## ⚡ Quick Commands
 
 ### End of Session Checklist
+
 ```bash
 # 1. Stage all changes
 git add .
@@ -189,7 +205,7 @@ Machine: [Office/Personal]
 Time: [X hours]"
 
 # 3. Push
-git push origin develop
+git push origin main
 
 # 4. Updated memories/repo/ files?
 # ✅ current-task.md
@@ -198,9 +214,10 @@ git push origin develop
 ```
 
 ### Start of Session Checklist
+
 ```bash
 # 1. Pull latest
-git pull origin develop
+git pull origin main
 
 # 2. Read these files (in order):
 cat memories/repo/current-task.md
@@ -214,23 +231,28 @@ cat memories/repo/progress.md
 ## 🔄 Sync States
 
 ### ✅ Perfect Sync
+
 - Both machines have latest code
 - Memory files are up to date
 - No merge conflicts
 
 ### ⚠️ Out of Sync
+
 **If you see:**
+
 - Outdated "Last Updated" date in current-task.md
 - Git says "Your branch is behind"
 
 **Solution:**
+
 ```bash
-git pull origin develop
+git pull origin main
 # Read memory files
 # Continue from "Next Task"
 ```
 
 ### 🔥 Conflict!
+
 **If you worked on both machines without pulling:**
 
 ```bash
@@ -238,7 +260,7 @@ git pull origin develop
 git stash
 
 # 2. Pull latest
-git pull origin develop
+git pull origin main
 
 # 3. Apply your changes
 git stash pop
@@ -249,7 +271,7 @@ git stash pop
 # 5. Commit
 git add .
 git commit -m "merge: sync between machines"
-git push origin develop
+git push origin main
 ```
 
 ---
@@ -269,6 +291,7 @@ This helps you remember context when switching.
 ## 🎯 Weekly Workflow
 
 ### Sunday Evening (Planning)
+
 ```bash
 # Update next-steps.md for the week
 # Set weekly goals in progress.md
@@ -276,6 +299,7 @@ This helps you remember context when switching.
 ```
 
 ### Friday/Weekend (Review)
+
 ```bash
 # Update progress.md with week summary
 # Check off completed items in PROJECT_ROADMAP.md

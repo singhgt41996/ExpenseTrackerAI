@@ -85,6 +85,6 @@ echo "1. Manually update memories/repo/current-task.md (mark task complete, upda
 echo "2. Manually update memories/repo/progress.md (add session entry from session-temp.md)"
 echo "3. Run: git add ."
 echo "4. Run: git commit -F .git-commit-msg-temp"
-echo "5. Run: git push origin develop"
+echo "5. Run: git push origin main"
 echo ""
 echo "🚀 Done! Happy coding!"

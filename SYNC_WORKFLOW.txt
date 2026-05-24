@@ -52,7 +52,7 @@
     4️⃣  Git commit & push:
         git add .
         git commit -F .git-commit-msg-temp
-        git push origin develop
+        git push origin main
         ↓
     5️⃣  Done! 🎉 Other machine will sync automatically
 
@@ -139,7 +139,7 @@
 └─────────────────────────────────────────────────────────────────────────┘
 
     ❌ "Your branch is behind"
-       → Run: git pull origin develop
+       → Run: git pull origin main
 
     ❌ "Merge conflict"
        → Usually in memory files

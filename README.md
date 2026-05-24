@@ -10,6 +10,7 @@ This is a [**React Native**](https://reactnative.dev) project, bootstrapped usin
 ## 📱 Project Overview
 
 **FinFlow** is an AI-powered expense tracking app with:
+
 - 📊 Smart expense categorization (AI)
 - 📸 Receipt scanning (OCR)
 - 📈 Interactive charts & analytics
@@ -19,6 +20,7 @@ This is a [**React Native**](https://reactnative.dev) project, bootstrapped usin
 - 💳 Payment integration (Razorpay/Stripe)
 
 **Why this project?**
+
 - Covers 95% of senior RN developer skills
 - Portfolio-ready for interviews
 - Demonstrates production-level architecture
@@ -55,7 +57,7 @@ cat memories/repo/current-task.md
 # 3. Commit & push
 git add .
 git commit -F .git-commit-msg-temp
-git push origin develop
+git push origin main
 ```
 
 ### 📋 Visual Workflow
@@ -68,22 +70,23 @@ See [`memories/repo/UPDATE_GUIDE.md`](./memories/repo/UPDATE_GUIDE.md) for compl
 
 ## 📚 Documentation Structure
 
-| File | Purpose |
-|------|---------|
-| [`PROJECT_ROADMAP.md`](./PROJECT_ROADMAP.md) | Complete 16-week learning roadmap |
-| [`SYNC_WORKFLOW.txt`](./SYNC_WORKFLOW.txt) | Visual sync workflow guide |
-| [`memories/repo/current-task.md`](./memories/repo/current-task.md) | What you're working on NOW |
-| [`memories/repo/progress.md`](./memories/repo/progress.md) | Weekly progress tracking |
-| [`memories/repo/next-steps.md`](./memories/repo/next-steps.md) | Upcoming tasks |
-| [`memories/repo/learnings.md`](./memories/repo/learnings.md) | Key insights & gotchas |
-| [`memories/repo/UPDATE_GUIDE.md`](./memories/repo/UPDATE_GUIDE.md) | How to update progress |
-| [`scripts/README.md`](./scripts/README.md) | Helper scripts documentation |
+| File                                                               | Purpose                           |
+| ------------------------------------------------------------------ | --------------------------------- |
+| [`PROJECT_ROADMAP.md`](./PROJECT_ROADMAP.md)                       | Complete 16-week learning roadmap |
+| [`SYNC_WORKFLOW.txt`](./SYNC_WORKFLOW.txt)                         | Visual sync workflow guide        |
+| [`memories/repo/current-task.md`](./memories/repo/current-task.md) | What you're working on NOW        |
+| [`memories/repo/progress.md`](./memories/repo/progress.md)         | Weekly progress tracking          |
+| [`memories/repo/next-steps.md`](./memories/repo/next-steps.md)     | Upcoming tasks                    |
+| [`memories/repo/learnings.md`](./memories/repo/learnings.md)       | Key insights & gotchas            |
+| [`memories/repo/UPDATE_GUIDE.md`](./memories/repo/UPDATE_GUIDE.md) | How to update progress            |
+| [`scripts/README.md`](./scripts/README.md)                         | Helper scripts documentation      |
 
 ---
 
 ## 🏗️ Tech Stack
 
 ### Core
+
 - React Native 0.74
 - TypeScript (strict mode)
 - Zustand (global state)
@@ -91,6 +94,7 @@ See [`memories/repo/UPDATE_GUIDE.md`](./memories/repo/UPDATE_GUIDE.md) for compl
 - Supabase (backend)
 
 ### UI/UX
+
 - Atomic Design Pattern
 - React Native Reanimated
 - React Native Gesture Handler
@@ -98,6 +102,7 @@ See [`memories/repo/UPDATE_GUIDE.md`](./memories/repo/UPDATE_GUIDE.md) for compl
 - Victory Native (charts)
 
 ### AI & Advanced
+
 - OpenAI API
 - Firebase (Analytics, Crashlytics, FCM)
 - CodePush (OTA updates)
@@ -114,6 +119,7 @@ See [`PROJECT_ROADMAP.md`](./PROJECT_ROADMAP.md) for complete tech stack.
 **Overall:** 5%
 
 ### ✅ Completed
+
 - [x] Project structure & setup
 - [x] Theme system (colors, typography, spacing)
 - [x] Text atom component
@@ -121,6 +127,7 @@ See [`PROJECT_ROADMAP.md`](./PROJECT_ROADMAP.md) for complete tech stack.
 - [x] Multi-machine sync workflow
 
 ### 🔄 In Progress
+
 - [ ] Button atom component
 
 See [`memories/repo/progress.md`](./memories/repo/progress.md) for detailed tracking.

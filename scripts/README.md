@@ -7,6 +7,7 @@
 ## 🚀 Available Scripts
 
 ### 1. `sync-start.sh` - Start Your Coding Session
+
 **When to use:** Every time you start coding on any machine
 
 ```bash
@@ -14,6 +15,7 @@
 ```
 
 **What it does:**
+
 - ✅ Pulls latest code from git
 - ✅ Shows your current task
 - ✅ Shows recent progress
@@ -23,6 +25,7 @@
 ---
 
 ### 2. `update-progress.sh` - Log Your Work
+
 **When to use:** After completing any task/feature
 
 ```bash
@@ -30,6 +33,7 @@
 ```
 
 **What it does:**
+
 - ✅ Prompts for task details
 - ✅ Updates memory files
 - ✅ Generates commit message
@@ -40,6 +44,7 @@
 ## 💡 Recommended Workflow
 
 ### Starting Work
+
 ```bash
 # 1. Run sync script
 ./scripts/sync-start.sh
@@ -58,6 +63,7 @@
 ## 🔧 Other Useful Commands
 
 ### Quick Status Check
+
 ```bash
 # See what you last worked on
 cat memories/repo/current-task.md | head -40
@@ -67,6 +73,7 @@ cat memories/repo/progress.md | tail -30
 ```
 
 ### Manual Git Workflow
+
 ```bash
 # If you prefer manual workflow
 git add .
@@ -78,7 +85,7 @@ git commit -m "feat: your feature name
 Machine: [Office/Personal]
 Time: X hours"
 
-git push origin develop
+git push origin main
 ```
 
 ---
