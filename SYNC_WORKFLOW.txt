@@ -1,0 +1,162 @@
+```
+╔══════════════════════════════════════════════════════════════════════════╗
+║                    🔄 FINFLOW - MACHINE SYNC WORKFLOW                    ║
+║                   Keep Your Work Synced Across Machines                  ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  📍 STARTING WORK (On Any Machine)                                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    1️⃣  Open Terminal
+        ↓
+    2️⃣  Run: ./scripts/sync-start.sh
+        ↓
+    3️⃣  Script shows:
+        • Current task (from last session)
+        • Recent progress
+        • Next steps
+        ↓
+    4️⃣  Start coding! 🚀
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  💻 WHILE CODING                                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    ✏️  Build your feature/component
+        ↓
+    ✅  Test it works
+        ↓
+    📝  Note any learnings
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ✅ FINISHING WORK (Before Closing Laptop)                              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    1️⃣  Run: ./scripts/update-progress.sh
+        ↓
+    2️⃣  Answer prompts:
+        • Which machine? (Office/Personal)
+        • What did you complete?
+        • What's next?
+        • Hours worked?
+        • Any learnings?
+        ↓
+    3️⃣  Manually update memory files:
+        • memories/repo/current-task.md
+        • memories/repo/progress.md
+        • memories/repo/learnings.md (if needed)
+        ↓
+    4️⃣  Git commit & push:
+        git add .
+        git commit -F .git-commit-msg-temp
+        git push origin develop
+        ↓
+    5️⃣  Done! 🎉 Other machine will sync automatically
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  🔁 THE SYNC CYCLE                                                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    Personal Laptop (Evening)
+         ↓
+    [Code Feature] → [Update Memories] → [Git Push]
+         ↓
+    ☁️  GitHub (develop branch)
+         ↓
+    [Git Pull] ← Office Machine (Next Day)
+         ↓
+    [Read Memories] → [Continue Work]
+         ↓
+    [Code Feature] → [Update Memories] → [Git Push]
+         ↓
+    ☁️  GitHub (develop branch)
+         ↓
+    Personal Laptop (Evening) ← [Git Pull]
+         ↓
+    🔄 REPEAT
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  📂 KEY FILES TO ALWAYS UPDATE                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    memories/repo/current-task.md
+    ├─ ✅ What you just completed
+    ├─ 🎯 What's next
+    └─ 📅 Last updated date + machine
+
+    memories/repo/progress.md
+    ├─ ✅ Weekly completed items
+    ├─ 📊 Progress percentage
+    └─ 📝 Session history
+
+    memories/repo/learnings.md
+    └─ 💡 Any new insights/gotchas
+
+    memories/repo/MACHINE_SYNC.md
+    ├─ 📱 Last active per machine
+    └─ 🔄 Last sync status
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  🚨 GOLDEN RULES                                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    1. 🔽 ALWAYS pull before starting work
+    2. 📝 ALWAYS update memories before pushing
+    3. ⬆️  ALWAYS push before closing laptop
+    4. 🎯 ALWAYS read current-task.md first
+    5. 💾 ALWAYS commit after each feature
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ⚡ QUICK COMMANDS                                                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    Start session:       ./scripts/sync-start.sh
+    End session:         ./scripts/update-progress.sh
+    Check current task:  cat memories/repo/current-task.md
+    Check progress:      cat memories/repo/progress.md
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  💡 PRO TIPS                                                            │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    • Commit often (after each component/feature)
+    • Use descriptive commit messages with emojis
+    • Update memories BEFORE pushing (don't forget!)
+    • If unsure where you left off, read current-task.md
+    • Keep session history in progress.md for tracking
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  🔧 TROUBLESHOOTING                                                     │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    ❌ "Your branch is behind"
+       → Run: git pull origin develop
+
+    ❌ "Merge conflict"
+       → Usually in memory files
+       → Keep the latest "Last Updated" timestamp
+       → Manually merge, then commit
+
+    ❌ "Forgot what I was doing"
+       → Read: memories/repo/current-task.md
+       → Check: git log -1
+
+    ❌ "Forgot to push last night"
+       → No problem! Just push now
+       → Other machine will sync on next pull
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  🎯 REMEMBER: The goal is seamless switching between machines!          ║
+║     Your memory files are your breadcrumbs. Leave them well! 🍞         ║
+╚══════════════════════════════════════════════════════════════════════════╝
+```

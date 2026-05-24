@@ -1,25 +1,33 @@
 import { TextProps as RNTextProps } from 'react-native';
 import { TextVariantKey } from '@/theme';
 import React from 'react';
-import { colors } from '../../../theme/colors';
 
 export interface TextProps extends RNTextProps {
-  /**
-   * @default 'bodyMedium'
-   */
+
   variant?: TextVariantKey;
   color?: string;
-  /**
-   * @default 'left'
-   */
   align?: 'left' | 'center' | 'right' | 'justify';
-  /**
-   * @default false
-   */
   bold?: boolean;
-  /**
-   * @default false
-   */
   italic?: boolean;
+  
+  // ===== TEXT DECORATION =====
+  
+  underline?: boolean;
+  strikethrough?: boolean;
+  transform?: 'uppercase' | 'lowercase' | 'capitalize' | 'none';
+  
+  // ===== INTERACTION & STATE =====
+  disabled?: boolean;
+  numberOfLines?: number;
+  ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
+  onPress?: () => void;
+  selectable?: boolean;
+  accessibilityLabel?: string;
+  /**
+   * Test identifier for E2E testing
+   * @example testID="expense-amount"
+   */
+  testID?: string;
+
   children: React.ReactNode;
 }
