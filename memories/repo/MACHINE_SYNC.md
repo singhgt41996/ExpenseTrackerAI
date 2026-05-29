@@ -45,7 +45,7 @@
 
 ```bash
 git checkout develop
-git pull origin main
+git pull origin ayush-dev
 cat memories/repo/current-task.md
 ```
 
@@ -56,7 +56,7 @@ cat memories/repo/current-task.md
 # 2. Commit changes
 git add .
 git commit -m "feat: [task name]"
-git push origin main
+git push origin ayush-dev
 
 # 3. Update this file
 # - Change "Last Active" for your machine
@@ -93,7 +93,7 @@ git push origin main
 ### "Your branch is behind origin/develop"
 
 ```bash
-git pull origin main
+git pull origin ayush-dev
 # Then continue work
 ```
 
@@ -103,11 +103,11 @@ git pull origin main
 # Option 1: Commit them
 git add .
 git commit -m "wip: [what you were doing]"
-git push origin main
+git push origin ayush-dev
 
 # Option 2: Stash them
 git stash
-git pull origin main
+git pull origin ayush-dev
 git stash pop
 ```
 
@@ -119,7 +119,7 @@ git stash pop
 # Then:
 git add memories/repo/current-task.md
 git commit -m "merge: resolve memory file conflict"
-git push origin main
+git push origin ayush-dev
 ```
 
 ---
