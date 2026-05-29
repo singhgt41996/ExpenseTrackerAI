@@ -1,13 +1,13 @@
 import { Pressable, ActivityIndicator, View } from 'react-native';
 import React from 'react';
-import { ButtonProps } from '@/components/atoms/buttons/types';
+import { ButtonProps } from '@/components/atoms/button/types';
 import { TextComponent } from '@/components/atoms/text';
 import {
   getButtonTextColorByVariant,
   getButtonTextSizeByVariant,
   getButttonStyles,
   getSpinnerColor,
-} from '@/components/atoms/buttons/styles';
+} from '@/components/atoms/button/styles';
 
 export const ButtonComponent = ({
   onPress,
