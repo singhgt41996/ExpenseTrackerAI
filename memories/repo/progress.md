@@ -1,9 +1,9 @@
 # Progress Tracker
 
-> **Last Updated:** May 25, 2026  
+> **Last Updated:** May 30, 2026  
 > **System:** Personal Laptop  
-> **Week:** 1 of 16  
-> **Timeline Status:** ✅ ON TRACK (Ahead by 1 day!)
+> **Week:** 2 of 16  
+> **Timeline Status:** ✅ ON TRACK
 
 ---
 
@@ -49,11 +49,28 @@
 - [x] TypeScript types with full documentation
 - [x] Styles separated in styles.ts
 
+**Input Atom** - 🔄 IN PROGRESS (May 30, 2026)
+
+- [x] TypeScript types fixed (onChangeText, maxLength, keyboardType)
+- [x] Complete styles.ts with all variants and states
+- [x] Variant styles (outlined, filled, underlined)
+- [x] Size styles (small, medium, large)
+- [x] State styles (focus, error, success, disabled)
+- [ ] Component implementation (index.tsx) - TOMORROW
+
+**iOS Build** - ✅ FIXED (May 30, 2026)
+
+- [x] MMKV upgraded to v4.3.1 with nitro-modules
+- [x] Reanimated upgraded to v4.4.0 with worklets@0.9.1
+- [x] Podfile configured correctly
+- [x] Xcode scheme auto-open simulator
+- [x] Build successful on simulator
+
 ---
 
 ## 🔄 Currently Working On
 
-**Input Atom** - 🔄 NEXT UP (Target: May 26)
+**Input Component** - Finishing index.tsx (Target: May 31)
 
 ---
 
@@ -63,7 +80,8 @@
 
 - [x] ~~Text atom~~ ✅ Done May 24
 - [x] ~~Button atom~~ ✅ Done May 25
-- [ ] Input atom (text input with validation states)
+- [x] Input atom styles.ts ✅ (May 30)
+- [ ] Input atom index.tsx (May 31)
 - [ ] Icon atom (vector icons wrapper)
 
 ### Navigation

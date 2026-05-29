@@ -1,11 +1,16 @@
-import { TextStyle } from 'react-native/types_generated/index';
-import { ViewStyle } from 'react-native/types_generated/index';
+import {
+  TextStyle,
+  ViewStyle,
+  KeyboardTypeOptions as RNKeyboardType,
+} from 'react-native';
 
-type KeyboardTypeOptions = 'email' | 'numeric' | 'phone-pad';
+export type autoCapitalize = 'none' | 'sentences' | 'words' | 'characters';
+export type InputSize = 'small' | 'medium' | 'large';
+export type InputVariant = 'outlined' | 'filled' | 'underlined';
 
 export interface InputProps {
   value: string;
-  onChangeText: () => void;
+  onChangeText: (text: string) => void;
   placeholder?: string;
   disabled?: boolean;
 
@@ -15,21 +20,21 @@ export interface InputProps {
   helperText?: string;
   editable?: boolean;
   autoFocus?: boolean;
-  maxlength?: number;
+  maxLength?: number;
   multiline?: boolean;
   numberOfLines?: number;
 
   // 🔐 SECURITY & TYPES:
   secureTextEntry?: boolean; // Password mode (hide text)
-  keyboardType?: KeyboardTypeOptions; // 'email', 'numeric', 'phone-pad', etc.
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  keyboardType?: RNKeyboardType; // 'email', 'numeric', 'phone-pad', etc.
+  autoCapitalize?: autoCapitalize;
   autoComplete?: string; // Browser autocomplete hints
 
   // 🎨 VISUAL CUSTOMIZATION:
   leftIcon?: React.ReactNode; // Icon on left
   rightIcon?: React.ReactNode; // Icon on right (or clear button)
-  size?: 'small' | 'medium' | 'large';
-  variant?: 'outlined' | 'filled' | 'underlined';
+  size?: InputSize;
+  variant?: InputVariant;
 
   // ✅ VALIDATION STATES:
   success?: boolean; // Show success state (green border)

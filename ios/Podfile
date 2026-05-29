@@ -21,6 +21,12 @@ end
 target 'ExpenseTrackerAI' do
   config = use_native_modules!
 
+  # Explicitly add NitroModules (required by react-native-mmkv v4+)
+  pod 'NitroModules', :path => '../node_modules/react-native-nitro-modules'
+  
+  # Explicitly add RNWorklets (required by react-native-reanimated v4+)
+  pod 'RNWorklets', :path => '../node_modules/react-native-worklets'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
