@@ -1,6 +1,17 @@
-import { View, Text, TextInput } from 'react-native';
-import React from 'react';
+import { View, TextInput } from 'react-native';
+import React, { useState } from 'react';
 import { InputProps } from '@/components/atoms/input/types';
+import {
+  getContainerStyles,
+  getErrorTextStyles,
+  getHelperTextStyles,
+  getIconContainerStyles,
+  getInputContainerStyles,
+  getInputStyles,
+  getLabelStyles,
+  getPlaceholderColor,
+} from '@/components/atoms/input/styles';
+import { TextComponent } from '@/components/atoms/text';
 
 export const InputComponent = ({
   placeholder = 'Enter Something',
@@ -14,20 +25,20 @@ export const InputComponent = ({
   editable = true,
   autoFocus = false,
   maxLength,
-  multiline,
-  numberOfLines,
+  multiline = false,
+  numberOfLines = 1,
 
-  secureTextEntry,
-  keyboardType = 'text',
+  secureTextEntry = false,
+  keyboardType = 'default',
   autoCapitalize = 'none',
   autoComplete,
 
   leftIcon,
   rightIcon,
-  size,
-  variant,
+  size = 'medium',
+  variant = 'outlined',
 
-  success,
+  success = false,
   warning,
 
   showCharCount = false,
@@ -44,19 +55,87 @@ export const InputComponent = ({
   errorStyle,
   testID,
 }: InputProps) => {
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFocus?.();
+  };
+  const handleBlur = () => {
+    setIsFocused(false);
+    onBlur?.();
+  };
+
+  const isDisabled = disabled || !editable;
+  const hasError = !!error;
+  const containerStyles = getContainerStyles();
+  const inputContainerStyles = getInputContainerStyles(
+    variant,
+    size,
+    isFocused,
+    hasError,
+    success,
+    isDisabled,
+  );
+  const inputStyles = getInputStyles(size, disabled);
+  const labelStyles = getLabelStyles(size);
+  const placeholderColor = getPlaceholderColor(isDisabled);
   return (
-    <View>
-      <TextInput
-        value={value}
-        placeholder={placeholder}
-        // style={[...style]}
-        onChangeText={onChangeText}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onSubmitEditing={onSubmitEditing}
-        editable={editable || !disabled}
-        testID={testID}
-      />
+    <View style={[containerStyles, style]}>
+      {/* Label */}
+      {label && (
+        <TextComponent style={[labelStyles, labelStyle]}>
+          {label}
+          {required && <TextComponent color={'#F44336'}> *</TextComponent>}
+        </TextComponent>
+      )}
+
+      {/* Input Container */}
+      <View style={inputContainerStyles}>
+        {/* Left Icon */}
+        {leftIcon && (
+          <View style={getIconContainerStyles('left')}>{leftIcon}</View>
+        )}
+
+        {/* TextInput */}
+        <TextInput
+          value={value}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderColor}
+          style={[inputStyles, inputStyle]}
+          onChangeText={onChangeText}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onSubmitEditing={onSubmitEditing}
+          editable={!isDisabled}
+          autoFocus={autoFocus}
+          maxLength={maxLength}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
+          secureTextEntry={secureTextEntry}
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+          testID={testID}
+        />
+
+        {/* Right Icon */}
+        {rightIcon && (
+          <View style={getIconContainerStyles('right')}>{rightIcon}</View>
+        )}
+      </View>
+
+      {/* Error Message */}
+      {error && (
+        <TextComponent style={[getErrorTextStyles(), errorStyle]}>
+          {error}
+        </TextComponent>
+      )}
+
+      {/* Helper Text */}
+      {helperText && !error && (
+        <TextComponent style={getHelperTextStyles()}>
+          {helperText}
+        </TextComponent>
+      )}
     </View>
   );
 };
