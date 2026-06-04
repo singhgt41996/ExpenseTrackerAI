@@ -27,6 +27,8 @@ target 'ExpenseTrackerAI' do
   # Explicitly add RNWorklets (required by react-native-reanimated v4+)
   pod 'RNWorklets', :path => '../node_modules/react-native-worklets'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

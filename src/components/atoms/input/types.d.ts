@@ -11,10 +11,10 @@ export type InputVariant = 'outlined' | 'filled' | 'underlined';
 export interface InputProps {
   value: string;
   onChangeText: (text: string) => void;
-  placeholder?: string;
+  placeholder: string;
   disabled?: boolean;
 
-  label?: string;
+  label: string;
   error?: string;
   required?: boolean;
   helperText?: string;

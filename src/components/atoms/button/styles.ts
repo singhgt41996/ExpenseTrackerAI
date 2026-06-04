@@ -1,4 +1,4 @@
-import { ButtonSize, ButtonVariant } from '@/components/atoms/buttons/types';
+import { ButtonSize, ButtonVariant } from '@/components/atoms/button/types';
 import { colors, spacing, TextVariantKey, borderRadius } from '@/theme';
 import { ViewStyle } from 'react-native';
 

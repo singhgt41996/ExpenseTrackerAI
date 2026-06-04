@@ -39,7 +39,7 @@ const variantContainerStyles: Record<InputVariant, ViewStyle> = {
   outlined: {
     backgroundColor: colors.neutral.white,
     borderWidth: 1,
-    borderColor: colors.neutral.gray[300],
+    borderColor: colors.neutral.gray[500],
     borderRadius: borderRadius.sm,
   },
   filled: {
