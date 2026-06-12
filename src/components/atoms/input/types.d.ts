@@ -14,7 +14,7 @@ export interface InputProps {
   placeholder: string;
   disabled?: boolean;
 
-  label: string;
+  label?: string;
   error?: string;
   required?: boolean;
   helperText?: string;

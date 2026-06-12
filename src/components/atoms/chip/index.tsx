@@ -8,6 +8,7 @@ import {
 } from './styles';
 import { TextComponent } from '@/components/atoms/text';
 import { IconComponent } from '@/components/atoms/icon';
+import { colors } from '@/theme';
 
 export const ChipComponent = ({
   label,
@@ -60,7 +61,7 @@ export const ChipComponent = ({
             name="close"
             family="MaterialIcons"
             size={deleteIconSize}
-            color={textStyles.color}
+            color={colors.neutral.gray[900]}
           />
         </Pressable>
       )}

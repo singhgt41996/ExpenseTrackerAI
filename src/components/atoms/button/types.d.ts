@@ -13,11 +13,11 @@ export interface ButtonProps {
   onPress: () => void;
   size: ButtonSize;
   variant: ButtonVariant;
+  title: string;
   disabled?: boolean;
   loadingState?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  children: React.ReactNode;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   fullWidth?: boolean;

@@ -17,7 +17,7 @@ export const ButtonComponent = ({
   loadingState,
   style,
   textStyle,
-  children,
+  title,
   icon,
   iconPosition = 'left',
   fullWidth = false,
@@ -52,7 +52,7 @@ export const ButtonComponent = ({
         style={textStyle}
         color={buttonTextColor}
       >
-        {children}
+        {title}
       </TextComponent>
       {icon && iconPosition === 'right' && (
         <View style={{ marginLeft: 8 }}>{icon}</View>

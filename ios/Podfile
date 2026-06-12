@@ -32,7 +32,12 @@ target 'ExpenseTrackerAI' do
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    # Explicitly enable Hermes (required for MMKV JSI)
+    :hermes_enabled => true,
+    # Enable New Architecture (required for MMKV v4.3.1 + NitroModules)
+    :fabric_enabled => true,
+    :new_arch_enabled => true
   )
 
   post_install do |installer|

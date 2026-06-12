@@ -58,10 +58,12 @@ export const InputComponent = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const handleFocus = () => {
     setIsFocused(true);
+    console.log('Focus Came ');
     onFocus?.();
   };
   const handleBlur = () => {
     setIsFocused(false);
+    console.log('Focus lost');
     onBlur?.();
   };
 
