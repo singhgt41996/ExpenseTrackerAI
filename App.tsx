@@ -12,105 +12,90 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import { InputComponent } from './src/components/atoms/input/index';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import { useEffect, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
 import { useAuthStore } from './src/store/authStore';
 import { TextComponent } from './src/components/atoms/text/index';
+import { NavigationContainer, NavigationState } from '@react-navigation/native';
+import { RootNavigator } from './src/navigation/RootNavigator';
+import { ScreenWrapper } from './src/components/templates/screenwrapper';
+import { LoaderOverlay } from './src/components/molecules/loaderOverlay';
 import { colors } from './src/theme/colors';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const { checkAuth, isLoading, isAuthenticated, user } = useAuthStore();
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size={'large'} color="#4CAF50" />
-        <TextComponent variant="bodyMedium" color={colors.neutral.gray[900]}>
-          Checking Autentication
-        </TextComponent>
-      </View>
-    );
-  }
-
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <View style={styles.container}>
-        {isAuthenticated ? (
-          <>
-            <TextComponent
-              variant="bodyMedium"
-              color={colors.neutral.gray[900]}
-            >
-              ✅ Logged In!
-            </TextComponent>
-            <TextComponent
-              variant="bodyMedium"
-              color={colors.neutral.gray[900]}
-            >
-              Email: {user?.email}
-            </TextComponent>
-            <TextComponent
-              variant="bodyMedium"
-              color={colors.neutral.gray[900]}
-            >
-              Name : {user?.name}
-            </TextComponent>
-          </>
-        ) : (
-          <>
-            <TextComponent
-              variant="bodyMedium"
-              color={colors.neutral.gray[900]}
-            >
-              ❌ Not Logged In
-            </TextComponent>
-            <TextComponent
-              variant="bodyMedium"
-              color={colors.neutral.gray[900]}
-            >
-              You need to login
-            </TextComponent>
-          </>
-        )}
-      </View>
+        <AppContent />
     </SafeAreaProvider>
   );
 }
 
-// function AppContent() {
-//   const safeAreaInsets = useSafeAreaInsets();
-//   const [inputValue, setInputValue] = useState<string>('');
-//   return (
-//     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-//     <View style={[styles.container, { paddingTop: safeAreaInsets.top }]}>
-//       <InputComponent
-//         placeholder="sdbfsu"
-//         value={inputValue}
-//         onChangeText={setInputValue}
-//         label="This is the test input Box"
-//         required={false}
-//       />
+// Walks down nested navigators (Stack -> Tab -> ...) to the focused screen
+const getActiveRouteName = (state?: NavigationState): string | undefined => {
+  if (!state) {
+    return undefined;
+  }
+  const route = state.routes[state.index];
+  if (route.state) {
+    return getActiveRouteName(route.state as NavigationState);
+  }
+  return route.name;
+};
 
-//       {/* MaterialIcons: 'home' is correct */}
-//       <IconComponent name="home" family="MaterialIcons" size="xs" />
-//     </View>
-//     // </TouchableWithoutFeedback>
-//   );
-// }
+const AppContent = () => {
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const isLoading = useAuthStore((state) => state.isLoading);
+
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await checkAuth();
+      } finally {
+        setInitializing(false);
+      }
+    };
+    init();
+  }, [checkAuth]);
+
+  // Cold-start check: full screen (there's no UI to preserve yet)
+  if (initializing) {
+    return (
+      <ScreenWrapper padded edges={['top', 'bottom']}>
+        <View style={styles.container}>
+          <ActivityIndicator size={'large'} color={colors.primary[500]} />
+          <TextComponent variant="bodyMedium" color={colors.neutral.gray[900]}>
+            Loading...
+          </TextComponent>
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
+  // After init, keep the app mounted and show the loader as an overlay
+  return (
+    <>
+      <NavigationContainer
+        onStateChange={(state) => {
+          console.log('Active route:', getActiveRouteName(state));
+          console.log('Full nav state:', JSON.stringify(state, null, 2));
+        }}
+      >
+        <RootNavigator />
+      </NavigationContainer>
+      <LoaderOverlay visible={isLoading} />
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

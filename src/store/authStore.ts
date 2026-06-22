@@ -43,6 +43,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (error) throw error;
       if (!data.session || !data.user) throw new Error('No Session Created');
 
+      console.log('Login data:', data);
       // Save to MMKV (persistent storage)
       storageHelpers.setAuthToken(data.session.access_token);
       storageHelpers.setRefreshToken(data.session.refresh_token);
@@ -65,6 +66,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAuthenticated: true,
       });
     } catch (error: any) {
+      console.log('Login error:', error);
       set({
         isAuthenticated: false,
         isLoading: false,
@@ -75,7 +77,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   // Signup action
-  signup: async (email: string, name: string, password: string) => {
+  signup: async (email: string, password: string, name: string) => {
     set({ isLoading: true, error: null });
     try {
       const { data, error } = await supabase.auth.signUp({
