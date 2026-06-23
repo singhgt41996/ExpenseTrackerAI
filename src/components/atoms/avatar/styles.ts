@@ -11,7 +11,6 @@ export const getAvatarSize = (size: AvatarSize = 'md'): number => {
     md: 40,
     lg: 56,
     xl: 72,
-    xxl: 96,
   };
 
   return sizes[size];

@@ -46,7 +46,7 @@ export const SelectboxComponent = ({
   required = false,
 
   style,
-  testId,
+  testID,
 }: SelectBoxProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [tempSelected, setTempSelected] = useState(selected || []);
@@ -139,7 +139,7 @@ export const SelectboxComponent = ({
   };
 
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {/* Label */}
       {label && (
         <TextComponent>
@@ -200,7 +200,7 @@ export const SelectboxComponent = ({
                     key={index}
                     label={String(item[labelKey])}
                     variant={'filled'}
-                    size={'small'}
+                    size={'sm'}
                     onDelete={() => handleChipDelete(item)}
                   />
                 ))}
@@ -268,14 +268,14 @@ export const SelectboxComponent = ({
               <ButtonComponent
                 title={'Cancel'}
                 variant={'outline'}
-                size={'medium'}
+                size={'md'}
                 onPress={handleCancel}
                 style={{ flex: 1, marginRight: 8 }}
               />
               <ButtonComponent
                 title={'Done'}
                 variant={'primary'}
-                size={'medium'}
+                size={'md'}
                 onPress={handleDone}
                 style={{ flex: 1, marginLeft: 8 }}
               />

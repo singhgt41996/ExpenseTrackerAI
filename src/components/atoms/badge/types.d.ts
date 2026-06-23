@@ -1,4 +1,5 @@
 import { ViewStyle } from 'react-native';
+import { ComponentSize } from '@/theme';
 
 export type BadgeVariant =
   | 'default'
@@ -6,7 +7,7 @@ export type BadgeVariant =
   | 'success'
   | 'error'
   | 'warning';
-export type BadgeSize = 'small' | 'medium' | 'large';
+export type BadgeSize = ComponentSize;
 
 export interface BadgeProps {
   // Content
@@ -27,5 +28,5 @@ export interface BadgeProps {
   style?: ViewStyle;
 
   // Accessibility
-  testId?: string;
+  testID?: string;
 }

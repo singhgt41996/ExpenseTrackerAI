@@ -1,6 +1,7 @@
 import { ViewStyle, ImageStyle } from 'react-native';
+import { ComponentSize } from '@/theme';
 
-export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | number;
+export type AvatarSize = ComponentSize | number;
 export type AvatarVariant = 'circular' | 'rounded' | 'square';
 
 export interface AvatarProps {
@@ -25,5 +26,5 @@ export interface AvatarProps {
 
   // Accessibility
   alt?: string; // Image alt text
-  testId?: string;
+  testID?: string;
 }

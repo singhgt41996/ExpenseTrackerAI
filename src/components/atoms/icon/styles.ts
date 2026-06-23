@@ -17,7 +17,6 @@ export const getIconSize = (size: IconSizes | number = 'md'): number => {
     md: 24,
     lg: 28,
     xl: 32,
-    xxl: 36,
   };
   return sizes[size];
 };

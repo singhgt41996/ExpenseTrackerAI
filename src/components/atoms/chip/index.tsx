@@ -13,7 +13,7 @@ import { colors } from '@/theme';
 export const ChipComponent = ({
   label,
   variant = 'filled',
-  size = 'medium',
+  size = 'md',
   selected = false,
   color,
   icon,
@@ -21,7 +21,7 @@ export const ChipComponent = ({
   onDelete,
   disabled = false,
   style,
-  testId,
+  testID,
 }: ChipProps) => {
   const containerStyles = getChipContainerStyles(
     variant,
@@ -79,7 +79,7 @@ export const ChipComponent = ({
           pressed && { opacity: 0.8 },
           style,
         ]}
-        testID={testId}
+        testID={testID}
       >
         {content}
       </Pressable>
@@ -88,7 +88,7 @@ export const ChipComponent = ({
 
   // Otherwise just a View
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {content}
     </View>
   );

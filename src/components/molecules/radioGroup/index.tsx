@@ -21,7 +21,7 @@ export const RadioGroup = ({
   required,
   direction = 'vertical',
   style,
-  testId,
+  testID,
 }: RadioGroupProps) => {
   const containerStyles = getContainerStyles();
   const labelStyleForRadioGroup = getLabelStyleForRadioGroup(!!error);
@@ -29,7 +29,7 @@ export const RadioGroup = ({
   const errorTextStyles = getErrorTextStyles();
 
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {label && (
         <TextComponent style={labelStyleForRadioGroup}>
           {label}

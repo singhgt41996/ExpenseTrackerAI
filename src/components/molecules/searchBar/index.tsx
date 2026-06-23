@@ -22,7 +22,7 @@ export const SearchBar = ({
   autoFocus = false,
 
   style,
-  testId,
+  testID,
 }: SearchBarProps) => {
   const containerStyles = getContainerStyles();
   const inputStyles = getInputStyles();
@@ -38,13 +38,13 @@ export const SearchBar = ({
   };
 
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {/* Search Icon */}
       <View style={iconContainerStyles}>
         <IconComponent
           name="search"
           family="Ionicons"
-          size="small"
+          size="sm"
           color={lightTheme.text.secondary}
         />
       </View>
@@ -66,7 +66,7 @@ export const SearchBar = ({
             color: lightTheme.text.primary,
           },
         ]}
-        testID={testId ? `${testId}-input` : undefined}
+        testID={testID ? `${testID}-input` : undefined}
       />
 
       {/* Clear Icon */}
@@ -79,7 +79,7 @@ export const SearchBar = ({
           <IconComponent
             name="close-circle"
             family="Ionicons"
-            size="small"
+            size="sm"
             color={lightTheme.text.secondary}
           />
         </TouchableOpacity>

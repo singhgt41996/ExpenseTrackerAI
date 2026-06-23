@@ -36,7 +36,7 @@ export const DatePicker = ({
   maximumDate,
 
   style,
-  testId,
+  testID,
 }: DatePickerProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [tempDate, setTempDate] = useState<Date>(value || new Date());
@@ -157,7 +157,7 @@ export const DatePicker = ({
   };
 
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {/* Label */}
       {label && (
         <TextComponent style={labelStyles}>
@@ -181,7 +181,7 @@ export const DatePicker = ({
         <IconComponent
           name="calendar"
           family="Ionicons"
-          size="small"
+          size="sm"
           color={
             disabled ? lightTheme.text.disabled : lightTheme.text.secondary
           }

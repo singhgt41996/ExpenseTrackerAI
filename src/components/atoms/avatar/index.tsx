@@ -21,7 +21,7 @@ export const AvatarComponent = ({
   style,
   imageStyle,
   alt,
-  testId,
+  testID,
 }: AvatarProps) => {
   const containerStyles = getAvatarContainerStyles(
     size,
@@ -63,7 +63,7 @@ export const AvatarComponent = ({
   };
 
   const content = (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {renderContent()}
     </View>
   );

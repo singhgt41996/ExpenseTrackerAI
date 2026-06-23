@@ -26,5 +26,5 @@ export interface DatePickerProps {
   maximumDate?: Date;
 
   style?: ViewStyle;
-  testId?: string;
+  testID?: string;
 }

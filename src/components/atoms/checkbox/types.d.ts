@@ -8,5 +8,5 @@ export interface CheckboxProps {
   disabled?: boolean;
   size?: number;
 
-  testId?: string;
+  testID?: string;
 }

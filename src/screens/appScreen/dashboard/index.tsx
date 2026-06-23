@@ -43,7 +43,7 @@ export const DashboardScreen = () => {
         <ButtonComponent
           title="Logout"
           variant="danger"
-          size="large"
+          size="lg"
           fullWidth
           onPress={handleLogout}
         />

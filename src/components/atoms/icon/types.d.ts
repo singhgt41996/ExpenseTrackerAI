@@ -1,5 +1,5 @@
 import { TextStyle } from 'react-native';
-import { colors } from '../../../theme/colors';
+import { ComponentSize } from '@/theme';
 
 export type IconFamily =
   | 'MaterialIcons'
@@ -11,7 +11,7 @@ export type IconFamily =
   | 'AntDesign'
   | 'Entypo';
 
-export type IconSizes = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+export type IconSizes = ComponentSize;
 
 export interface IconProps {
   name: string;
@@ -26,5 +26,5 @@ export interface IconProps {
   color?: string;
   style?: TextStyle;
 
-  testId?: string;
+  testID?: string;
 }

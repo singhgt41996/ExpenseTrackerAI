@@ -19,5 +19,5 @@ export interface RadioGroupProps {
   direction: 'vertical' | 'horizontal' = 'vertical';
   style?: ViewStyle;
 
-  testId?: string;
+  testID?: string;
 }

@@ -1,38 +1,30 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ScreenWrapper } from '@/components/templates/screenwrapper';
-import { TextComponent } from '@/components/atoms/text';
-import { InputComponent } from '@/components/atoms/input';
 import { ButtonComponent } from '@/components/atoms/button';
-import { useAuthStore } from '@/store/authStore';
+import { InputComponent } from '@/components/atoms/input';
+import { TextComponent } from '@/components/atoms/text';
+import { ScreenWrapper } from '@/components/templates/screenwrapper';
 import { AuthStackParamList } from '@/navigation/types';
+import { useAuthStore } from '@/store/authStore';
 import { colors, spacing } from '@/theme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-type LoginNavProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
-export const LoginScreen = () => {
-  const navigation = useNavigation<LoginNavProp>();
-
-  const login = useAuthStore((state) => state.login);
-  const isLoading = useAuthStore((state) => state.isLoading);
-  const error = useAuthStore((state) => state.error);
-
+export const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const { error, isLoading, login } = useAuthStore(state => state);
+
+  const onHandleLogin = async () => {
     try {
       await login(email.trim(), password);
-      // On success, isAuthenticated flips and RootNavigator swaps to the app.
-    } catch {
-      // Error message is stored in authStore.error and rendered below.
-    }
+    } catch {}
   };
 
   return (
-    <ScreenWrapper padded edges={['top', 'bottom']}>
+    <ScreenWrapper edges={['top', 'bottom']} padded={true}>
       <View style={styles.container}>
         <TextComponent variant="h1" color={colors.neutral.gray[900]}>
           Welcome Back
@@ -47,23 +39,22 @@ export const LoginScreen = () => {
 
         <View style={styles.form}>
           <InputComponent
-            label="Email"
-            placeholder="you@example.com"
             value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            placeholder="your@example.com"
+            onChangeText={value => setEmail(value)}
+            label="Email"
+            required={true}
             autoCapitalize="none"
-            required={false}
+            keyboardType="email-address"
           />
           <InputComponent
             label="Password"
-            placeholder="Enter your password"
             value={password}
             onChangeText={setPassword}
+            placeholder="Enter Password"
             secureTextEntry
-            required={false}
+            required={true}
           />
-
           {error ? (
             <TextComponent variant="bodySmall" color={colors.error.main}>
               {error}
@@ -73,9 +64,8 @@ export const LoginScreen = () => {
           <ButtonComponent
             title="Login"
             variant="primary"
-            size="large"
-            fullWidth
-            onPress={handleLogin}
+            size="lg"
+            onPress={onHandleLogin}
             loadingState={isLoading}
             disabled={!email || !password}
           />
@@ -83,14 +73,14 @@ export const LoginScreen = () => {
 
         <View style={styles.footer}>
           <TextComponent variant="bodyMedium" color={colors.neutral.gray[600]}>
-            Don't have an account?{' '}
+            Dont Have an Account{' '}
           </TextComponent>
           <TextComponent
             variant="bodyMedium"
             color={colors.primary[600]}
             onPress={() => navigation.navigate('Signup')}
           >
-            Sign up
+            Sign Up
           </TextComponent>
         </View>
       </View>
@@ -107,8 +97,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   form: {
-    marginTop: spacing.xl,
     gap: spacing.md,
+    marginTop: spacing.xl,
   },
   footer: {
     flexDirection: 'row',

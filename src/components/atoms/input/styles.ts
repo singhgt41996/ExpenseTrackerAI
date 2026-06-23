@@ -1,10 +1,6 @@
 import { ViewStyle, TextStyle } from 'react-native';
 import { colors, spacing, borderRadius, fontSizes, fontWeights } from '@/theme';
-import { InputProps } from '@/components/atoms/input/types';
-
-// Types
-export type InputSize = 'small' | 'medium' | 'large';
-export type InputVariant = 'outlined' | 'filled' | 'underlined';
+import { InputSize, InputVariant } from '@/components/atoms/input/types';
 
 // ============================================
 // BASE STYLES
@@ -61,40 +57,60 @@ const variantContainerStyles: Record<InputVariant, ViewStyle> = {
 };
 
 const sizeContainerStyles: Record<InputSize, ViewStyle> = {
-  small: {
+  xs: {
+    height: 36,
+    paddingHorizontal: spacing.sm,
+  },
+  sm: {
     height: 40,
     paddingHorizontal: spacing.sm,
   },
-  medium: {
+  md: {
     height: 48,
     paddingHorizontal: spacing.md,
   },
-  large: {
+  lg: {
     height: 56,
+    paddingHorizontal: spacing.lg,
+  },
+  xl: {
+    height: 64,
     paddingHorizontal: spacing.lg,
   },
 };
 
 const sizeInputStyles: Record<InputSize, TextStyle> = {
-  small: {
+  xs: {
+    fontSize: fontSizes.xs,
+  },
+  sm: {
     fontSize: fontSizes.sm,
   },
-  medium: {
+  md: {
     fontSize: fontSizes.sm,
   },
-  large: {
+  lg: {
+    fontSize: fontSizes.md,
+  },
+  xl: {
     fontSize: fontSizes.md,
   },
 };
 
 const sizeLabelStyles: Record<InputSize, TextStyle> = {
-  small: {
+  xs: {
     fontSize: fontSizes.xs,
   },
-  medium: {
+  sm: {
+    fontSize: fontSizes.xs,
+  },
+  md: {
     fontSize: fontSizes.sm,
   },
-  large: {
+  lg: {
+    fontSize: fontSizes.md,
+  },
+  xl: {
     fontSize: fontSizes.md,
   },
 };

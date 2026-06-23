@@ -14,7 +14,7 @@ export const IconComponent = ({
   style,
   disabled = false,
   onPress,
-  testId,
+  testID,
 }: IconProps) => {
   const iconSize = getIconSize(size);
   const iconColor = getIconColor(color);
@@ -27,7 +27,7 @@ export const IconComponent = ({
       color={iconColor}
       style={style}
       // Conditional Props
-      {...(testId && { testId: testId })}
+      {...(testID && { testID })}
     />
   );
 

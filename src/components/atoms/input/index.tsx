@@ -35,7 +35,7 @@ export const InputComponent = ({
 
   leftIcon,
   rightIcon,
-  size = 'medium',
+  size = 'md',
   variant = 'outlined',
 
   success = false,

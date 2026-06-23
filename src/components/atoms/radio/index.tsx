@@ -16,7 +16,7 @@ export const RadioButton = ({
   label,
   disabled = false,
   error = false,
-  testId,
+  testID,
 }: RadioButtonProps) => {
   const containerStyles = getRadioContainerStyles();
   const radioContainerStyles = getRadioStyles(selected, disabled, error, size);
@@ -27,7 +27,7 @@ export const RadioButton = ({
     <Pressable
       onPress={() => !disabled && onChange(!selected)}
       disabled={disabled}
-      testID={testId}
+      testID={testID}
       style={containerStyles}
     >
       <View style={radioContainerStyles}>

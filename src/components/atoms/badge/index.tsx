@@ -10,10 +10,10 @@ export const BadgeComponent = ({
   max = 99,
   showZero = false,
   variant = 'default',
-  size = 'medium',
+  size = 'md',
   dot = false,
   style,
-  testId,
+  testID,
 }: BadgeProps) => {
   const containerStyles = getBadgeContainerStyles(variant, size, dot);
   const textStyles = getBadgeTextStyles(size);
@@ -38,7 +38,7 @@ export const BadgeComponent = ({
   }
 
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {!dot && displayContent && (
         <TextComponent style={textStyles}>{displayContent}</TextComponent>
       )}

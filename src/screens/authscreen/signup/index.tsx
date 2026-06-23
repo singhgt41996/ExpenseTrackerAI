@@ -82,7 +82,7 @@ export const SignupScreen = () => {
           <ButtonComponent
             title="Sign Up"
             variant="primary"
-            size="large"
+            size="lg"
             fullWidth
             onPress={handleSignup}
             loadingState={isLoading}

@@ -12,5 +12,5 @@ export interface SearchBarProps {
   autoFocus?: boolean;
 
   style?: ViewStyle;
-  testId?: string;
+  testID?: string;
 }

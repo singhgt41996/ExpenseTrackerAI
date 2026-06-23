@@ -29,7 +29,7 @@ export const TextArea = ({
   showCharCount = false,
 
   style,
-  testId,
+  testID,
 }: TextAreaProps) => {
   const containerStyles = getContainerStyles();
   const labelStyles = getLabelStyles(!!error);
@@ -40,7 +40,7 @@ export const TextArea = ({
   const charCountStyles = getCharCountStyles();
 
   return (
-    <View style={[containerStyles, style]} testID={testId}>
+    <View style={[containerStyles, style]} testID={testID}>
       {/* Label */}
       {label && (
         <TextComponent style={labelStyles}>
@@ -63,7 +63,7 @@ export const TextArea = ({
         maxLength={maxLength}
         textAlignVertical="top"
         style={[textAreaStyles, textStyles]}
-        testID={testId ? `${testId}-input` : undefined}
+        testID={testID ? `${testID}-input` : undefined}
       />
 
       {/* Helper Text or Error */}

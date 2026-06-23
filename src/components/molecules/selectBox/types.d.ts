@@ -21,5 +21,5 @@ export interface SelectBoxProps<T = Record<string, any>> {
   required?: boolean;
 
   style?: ViewStyle;
-  testId?: string;
+  testID?: string;
 }

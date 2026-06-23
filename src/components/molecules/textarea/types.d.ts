@@ -16,5 +16,5 @@ export interface TextAreaProps {
   showCharCount?: boolean;
 
   style?: ViewStyle;
-  testId?: string;
+  testID?: string;
 }

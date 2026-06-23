@@ -1,8 +1,9 @@
 import React from 'react';
 import { ViewStyle } from 'react-native';
+import { ComponentSize } from '@/theme';
 
 export type ChipVariant = 'filled' | 'outlined';
-export type ChipSize = 'small' | 'medium' | 'large';
+export type ChipSize = ComponentSize;
 
 export interface ChipProps {
   label: string; // Text to display
@@ -25,5 +26,5 @@ export interface ChipProps {
   style?: ViewStyle; // Custom container styles
 
   // Accessibility
-  testId?: string;
+  testID?: string;
 }

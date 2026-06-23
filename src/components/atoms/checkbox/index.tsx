@@ -15,7 +15,7 @@ export const CheckboxComponent = ({
   label,
   error = false,
   size = 24,
-  testId,
+  testID,
 }: CheckboxProps) => {
   const containerStyles = getCheckboxContainerStyles();
   const checkboxStyles = getCheckBoxStyles(checked, error, size, disabled);
@@ -32,7 +32,7 @@ export const CheckboxComponent = ({
       {label && <TextComponent style={labelStyles}>{label}</TextComponent>}
 
       {/* Only checkbox box is clickable */}
-      <Pressable onPress={handleChange} disabled={disabled} testID={testId}>
+      <Pressable onPress={handleChange} disabled={disabled} testID={testID}>
         <View style={checkboxStyles}>
           {/* Show checkmark when checked */}
           {checked && (

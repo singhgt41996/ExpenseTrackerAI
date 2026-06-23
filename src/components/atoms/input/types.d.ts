@@ -3,9 +3,10 @@ import {
   ViewStyle,
   KeyboardTypeOptions as RNKeyboardType,
 } from 'react-native';
+import { ComponentSize } from '@/theme';
 
 export type autoCapitalize = 'none' | 'sentences' | 'words' | 'characters';
-export type InputSize = 'small' | 'medium' | 'large';
+export type InputSize = ComponentSize;
 export type InputVariant = 'outlined' | 'filled' | 'underlined';
 
 export interface InputProps {

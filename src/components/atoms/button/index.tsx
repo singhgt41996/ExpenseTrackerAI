@@ -11,7 +11,7 @@ import {
 
 export const ButtonComponent = ({
   onPress,
-  size = 'medium',
+  size = 'md',
   variant = 'primary',
   disabled = false,
   loadingState,
@@ -21,7 +21,7 @@ export const ButtonComponent = ({
   icon,
   iconPosition = 'left',
   fullWidth = false,
-  testId,
+  testID,
 }: ButtonProps) => {
   const isDisabled = disabled || loadingState;
   const buttonStyles = getButttonStyles(variant, size, fullWidth, disabled);
@@ -34,7 +34,7 @@ export const ButtonComponent = ({
       style={[buttonStyles, style]}
       onPress={isDisabled ? undefined : onPress}
       disabled={isDisabled}
-      testID={testId}
+      testID={testID}
     >
       {icon && iconPosition === 'left' && (
         <View style={{ marginRight: 8 }}>{icon}</View>

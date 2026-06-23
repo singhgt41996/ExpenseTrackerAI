@@ -4,25 +4,35 @@ import { ChipVariant, ChipSize } from './types';
 
 export const getChipContainerStyles = (
   variant: ChipVariant = 'filled',
-  size: ChipSize = 'medium',
+  size: ChipSize = 'md',
   selected: boolean = false,
   disabled: boolean = false,
   customColor?: string,
 ): ViewStyle => {
   // Size-specific styles
   const sizeStyles: Record<ChipSize, ViewStyle> = {
-    small: {
+    xs: {
+      height: 20,
+      paddingHorizontal: spacing.xs,
+      paddingVertical: 2,
+    },
+    sm: {
       height: 24,
       paddingHorizontal: spacing.xs,
       paddingVertical: 2,
     },
-    medium: {
+    md: {
       height: 32,
       paddingHorizontal: spacing.sm,
       paddingVertical: spacing.xs,
     },
-    large: {
+    lg: {
       height: 40,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+    },
+    xl: {
+      height: 48,
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.sm,
     },
@@ -70,14 +80,16 @@ export const getChipContainerStyles = (
 
 export const getChipTextStyles = (
   variant: ChipVariant = 'filled',
-  size: ChipSize = 'medium',
+  size: ChipSize = 'md',
   selected: boolean = false,
   customColor?: string,
 ): TextStyle => {
   const sizeStyles: Record<ChipSize, TextStyle> = {
-    small: { fontSize: fontSizes.xs },
-    medium: { fontSize: fontSizes.sm },
-    large: { fontSize: fontSizes.md },
+    xs: { fontSize: fontSizes.xs },
+    sm: { fontSize: fontSizes.xs },
+    md: { fontSize: fontSizes.sm },
+    lg: { fontSize: fontSizes.md },
+    xl: { fontSize: fontSizes.md },
   };
 
   const textColor =
@@ -98,11 +110,13 @@ export const getChipTextStyles = (
   };
 };
 
-export const getDeleteIconSize = (size: ChipSize = 'medium'): number => {
+export const getDeleteIconSize = (size: ChipSize = 'md'): number => {
   const sizes: Record<ChipSize, number> = {
-    small: 14,
-    medium: 16,
-    large: 18,
+    xs: 12,
+    sm: 14,
+    md: 16,
+    lg: 18,
+    xl: 20,
   };
   return sizes[size];
 };
