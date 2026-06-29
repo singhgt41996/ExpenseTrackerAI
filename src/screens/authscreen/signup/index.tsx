@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ScreenWrapper } from '@/components/templates/screenwrapper';
-import { TextComponent } from '@/components/atoms/text';
-import { InputComponent } from '@/components/atoms/input';
 import { ButtonComponent } from '@/components/atoms/button';
-import { useAuthStore } from '@/store/authStore';
+import { IconComponent } from '@/components/atoms/icon';
+import { InputComponent } from '@/components/atoms/input';
+import { TextComponent } from '@/components/atoms/text';
+import { ScreenWrapper } from '@/components/templates/screenwrapper';
 import { AuthStackParamList } from '@/navigation/types';
-import { colors, spacing } from '@/theme';
+import { useAuthStore } from '@/store/authStore';
+import { borderRadius, colors, getShadows, spacing } from '@/theme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-type SignupNavProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
+type SignupScreenProps = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
-export const SignupScreen = () => {
-  const navigation = useNavigation<SignupNavProp>();
-
-  const signup = useAuthStore((state) => state.signup);
-  const isLoading = useAuthStore((state) => state.isLoading);
-  const error = useAuthStore((state) => state.error);
+export const SignupScreen = ({ navigation }: SignupScreenProps) => {
+  const signup = useAuthStore(state => state.signup);
+  const isLoading = useAuthStore(state => state.isLoading);
+  const error = useAuthStore(state => state.error);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,27 +24,54 @@ export const SignupScreen = () => {
   const handleSignup = async () => {
     try {
       await signup(email.trim(), password, name.trim());
-      // On success, isAuthenticated flips and RootNavigator swaps to the app.
-    } catch {
-      // Error message is stored in authStore.error and rendered below.
-    }
+    } catch {}
   };
 
+  useEffect(() => {
+    return () => useAuthStore.getState().clearError();
+  }, []);
+
   return (
-    <ScreenWrapper padded edges={['top', 'bottom']}>
+    <ScreenWrapper
+      edges={['top', 'bottom']}
+      padded
+      backgroundColor={colors.neutral.gray[50]}
+    >
       <View style={styles.container}>
-        <TextComponent variant="h1" color={colors.neutral.gray[900]}>
+        {/* Brand */}
+        <View style={styles.brand}>
+          <View style={styles.brandBadge}>
+            <IconComponent
+              name="account-balance-wallet"
+              family="MaterialIcons"
+              size="xl"
+              color={colors.primary[600]}
+            />
+          </View>
+          <TextComponent variant="h2" color={colors.primary[700]} bold>
+            FinFlow
+          </TextComponent>
+        </View>
+
+        {/* Heading */}
+        <TextComponent
+          variant="h1"
+          color={colors.neutral.gray[900]}
+          align="center"
+        >
           Create Account
         </TextComponent>
         <TextComponent
           variant="bodyMedium"
           color={colors.neutral.gray[600]}
+          align="center"
           style={styles.subtitle}
         >
           Sign up to get started with FinFlow
         </TextComponent>
 
-        <View style={styles.form}>
+        {/* Form card */}
+        <View style={styles.card}>
           <InputComponent
             label="Name"
             placeholder="Your name"
@@ -90,6 +115,7 @@ export const SignupScreen = () => {
           />
         </View>
 
+        {/* Footer */}
         <View style={styles.footer}>
           <TextComponent variant="bodyMedium" color={colors.neutral.gray[600]}>
             Already have an account?{' '}
@@ -97,6 +123,7 @@ export const SignupScreen = () => {
           <TextComponent
             variant="bodyMedium"
             color={colors.primary[600]}
+            bold
             onPress={() => navigation.navigate('Login')}
           >
             Log in
@@ -112,12 +139,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: spacing.xxl,
   },
+  brand: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  brandBadge: {
+    width: 72,
+    height: 72,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primary[50],
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+  },
   subtitle: {
     marginTop: spacing.xs,
   },
-  form: {
+  card: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
     marginTop: spacing.xl,
     gap: spacing.md,
+    ...getShadows('md'),
   },
   footer: {
     flexDirection: 'row',

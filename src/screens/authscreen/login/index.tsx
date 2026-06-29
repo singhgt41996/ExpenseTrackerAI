@@ -1,17 +1,18 @@
 import { ButtonComponent } from '@/components/atoms/button';
+import { IconComponent } from '@/components/atoms/icon';
 import { InputComponent } from '@/components/atoms/input';
 import { TextComponent } from '@/components/atoms/text';
 import { ScreenWrapper } from '@/components/templates/screenwrapper';
 import { AuthStackParamList } from '@/navigation/types';
 import { useAuthStore } from '@/store/authStore';
-import { colors, spacing } from '@/theme';
+import { borderRadius, colors, getShadows, spacing } from '@/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
-export const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
+export const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,27 +24,57 @@ export const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
     } catch {}
   };
 
+  useEffect(() => {
+    return () => useAuthStore.getState().clearError();
+  }, []);
+
   return (
-    <ScreenWrapper edges={['top', 'bottom']} padded={true}>
+    <ScreenWrapper
+      edges={['top', 'bottom']}
+      padded
+      backgroundColor={colors.neutral.gray[50]}
+    >
       <View style={styles.container}>
-        <TextComponent variant="h1" color={colors.neutral.gray[900]}>
+        {/* Brand */}
+        <View style={styles.brand}>
+          <View style={styles.brandBadge}>
+            <IconComponent
+              name="account-balance-wallet"
+              family="MaterialIcons"
+              size="xl"
+              color={colors.primary[600]}
+            />
+          </View>
+          <TextComponent variant="h2" color={colors.primary[700]} bold>
+            FinFlow
+          </TextComponent>
+        </View>
+
+        {/* Heading */}
+        <TextComponent
+          variant="h1"
+          color={colors.neutral.gray[900]}
+          align="center"
+        >
           Welcome Back
         </TextComponent>
         <TextComponent
           variant="bodyMedium"
           color={colors.neutral.gray[600]}
+          align="center"
           style={styles.subtitle}
         >
           Log in to continue to FinFlow
         </TextComponent>
 
-        <View style={styles.form}>
+        {/* Form card */}
+        <View style={styles.card}>
           <InputComponent
             value={email}
             placeholder="your@example.com"
-            onChangeText={value => setEmail(value)}
+            onChangeText={setEmail}
             label="Email"
-            required={true}
+            required={false}
             autoCapitalize="none"
             keyboardType="email-address"
           />
@@ -53,8 +84,9 @@ export const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
             onChangeText={setPassword}
             placeholder="Enter Password"
             secureTextEntry
-            required={true}
+            required={false}
           />
+
           {error ? (
             <TextComponent variant="bodySmall" color={colors.error.main}>
               {error}
@@ -65,19 +97,22 @@ export const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
             title="Login"
             variant="primary"
             size="lg"
+            fullWidth
             onPress={onHandleLogin}
             loadingState={isLoading}
             disabled={!email || !password}
           />
         </View>
 
+        {/* Footer */}
         <View style={styles.footer}>
           <TextComponent variant="bodyMedium" color={colors.neutral.gray[600]}>
-            Dont Have an Account{' '}
+            Don't have an account?{' '}
           </TextComponent>
           <TextComponent
             variant="bodyMedium"
             color={colors.primary[600]}
+            bold
             onPress={() => navigation.navigate('Signup')}
           >
             Sign Up
@@ -93,12 +128,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: spacing.xxl,
   },
+  brand: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  brandBadge: {
+    width: 72,
+    height: 72,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primary[50],
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+  },
   subtitle: {
     marginTop: spacing.xs,
   },
-  form: {
-    gap: spacing.md,
+  card: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
     marginTop: spacing.xl,
+    gap: spacing.md,
+    ...getShadows('md'),
   },
   footer: {
     flexDirection: 'row',

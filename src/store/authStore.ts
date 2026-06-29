@@ -79,6 +79,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Signup action
   signup: async (email: string, password: string, name: string) => {
     set({ isLoading: true, error: null });
+    console.log('Payload before Sign up',email, password, name)
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -86,8 +87,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         options: { data: { name: name } },
       });
 
-      if (error) throw error;
+      if (error){
+        console.log('Error from the api ',error)
+        throw error;
+      }
       if (!data.session || !data.user) throw new Error('No session Found');
+      console.log(data)
 
       // Save to MMKV
       storageHelpers.setAuthToken(data.session.access_token);

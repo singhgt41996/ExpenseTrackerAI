@@ -1,15 +1,30 @@
-import React from "react";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AppStackParamList } from "@/navigation/types";
-import { DashboardScreen } from "@/screens/appScreen/dashboard";
+import React from 'react';
+import { AppStackParamList } from '@/navigation/types';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ExpenseTracker from '@/navigation/ExpenseTracker';
+import { BlogsTracker } from '@/navigation/BlogsTracker';
+import { HubScreen } from '@/screens/appScreen/hub';
 
+// const Stack = createNativeStackNavigator<AppStackParamList>();
 
-const Tab =  createBottomTabNavigator<AppStackParamList>()
+// export const MainNavigator = () => {
+//   return (
+//     <Stack.Navigator screenOptions={{ headerShown: false }}>
+//       <Stack.Screen name="Hub" component={HubScreen} />
+//       <Stack.Screen name="ExpenseTracker" component={ExpenseTracker} />
+//       <Stack.Screen name="Blogs" component={BlogsTracker} />
+//     </Stack.Navigator>
+//   );
+// };
 
-export const MainNavigator = ()=>{
-    return(
-        <Tab.Navigator screenOptions={{headerShown:false}}>
-            <Tab.Screen name="Dashboard" component={DashboardScreen}/>
-        </Tab.Navigator>
-    )
-}
+const Stack = createNativeStackNavigator<AppStackParamList>();
+
+export const MainNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Hub" component={HubScreen} />
+      <Stack.Screen name="ExpenseTracker" component={ExpenseTracker} />
+      <Stack.Screen name="Blogs" component={BlogsTracker} />
+    </Stack.Navigator>
+  );
+};
