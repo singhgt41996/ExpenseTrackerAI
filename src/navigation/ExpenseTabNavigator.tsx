@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ExpenseTabParamList } from '@/navigation/types';
 import { DashboardScreen } from '@/screens/appScreen/dashboard';
+import { AddExpenseScreen } from '@/screens/appScreen/addExpense';
 import { PlaceholderScreen } from '@/screens/shared/placeholder';
 import { IconComponent } from '@/components/atoms/icon';
 import { colors } from '@/theme';
@@ -19,18 +20,11 @@ export const ExpenseTabNavigator = () => {
       <Tab.Screen
         name="Home"
         component={DashboardScreen}
-        options={({ navigation }) => ({
-          // headerShown: false,
-          // headerLeft: () => (
-          //   <IconComponent
-          //     name="arrow-back"
-          //     onPress={() => navigation.goBack()} // bubbles up → pops to Hub
-          //   />
-          // ),
+        options={{
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="home" color={color} size={size} />
           ),
-        })}
+        }}
       />
       <Tab.Screen
         name="Stats"
@@ -43,7 +37,7 @@ export const ExpenseTabNavigator = () => {
       />
       <Tab.Screen
         name="AddExpense"
-        component={PlaceholderScreen}
+        component={AddExpenseScreen}
         options={{
           title: 'Add',
           tabBarIcon: ({ color, size }) => (

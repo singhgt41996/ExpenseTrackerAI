@@ -21,7 +21,10 @@ module.exports = {
         },
       },
     ],
-    
+
+    // Required by zod v4 (transforms `export * as ns from ...`)
+    '@babel/plugin-transform-export-namespace-from',
+
     // Reanimated plugin (MUST be LAST)
     'react-native-reanimated/plugin',
   ],
