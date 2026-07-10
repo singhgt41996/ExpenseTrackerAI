@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { ScreenWrapper } from '@/components/templates/screenwrapper';
@@ -9,9 +15,10 @@ import { AvatarComponent } from '@/components/atoms/avatar';
 import { ProgressBar } from '@/components/atoms/progressBar';
 import { useAuthStore } from '@/store/authStore';
 import { ExpenseTabParamList } from '@/navigation/types';
-import { useTransactionStore, Transaction } from '@/store/transactionStore';
+import { useTransactions } from '@/hooks/useTransactions';
 import { CATEGORY_META } from '@/constants/categories';
 import { borderRadius, colors, getShadows, spacing } from '@/theme';
+import { Transaction } from '@/services/transactionService';
 
 const MONTHLY_INCOME = 100000;
 
@@ -21,27 +28,34 @@ export const DashboardScreen = () => {
   const navigation = useNavigation<DashboardNav>();
   const user = useAuthStore(state => state.user);
   const logout = useAuthStore(state => state.logout);
-  const transactions = useTransactionStore(state => state.transactions);
+  const {
+    data: Transactions = [],
+    isLoading,
+    isError,
+    error,
+    isFetching,
+  } = useTransactions();
 
   // Derive everything from the transactions list (single source of truth).
   const { categories, totalSpent } = useMemo(() => {
-    const totals = transactions
-      .filter(t => t.amount < 0)
-      .reduce<Record<string, number>>((acc, t) => {
-        acc[t.category] = (acc[t.category] ?? 0) + Math.abs(t.amount);
-        return acc;
-      }, {});
-
+    const totals = Transactions.filter(t => t.amount > 0).reduce<
+      Record<string, number>
+    >((accu, t) => {
+      accu[t.category] = (accu[t.category] ?? 0) + Math.abs(t.amount);
+      return accu;
+    }, {});
+    console.log(totals);
     const total = Object.values(totals).reduce((a, b) => a + b, 0);
-
-    const cats = Object.entries(totals).map(([key, amount]) => ({
-      key,
-      amount,
+    const cat = Object.entries(total).map(([key, amount]) => ({
+      key: key,
+      amount: amount,
       ...CATEGORY_META[key],
     }));
-
-    return { categories: cats, totalSpent: total };
-  }, [transactions]);
+    return {
+      categories: cat,
+      totalSpent: total,
+    };
+  }, []);
 
   const budgetLeft = MONTHLY_INCOME - totalSpent;
 
@@ -52,6 +66,19 @@ export const DashboardScreen = () => {
       // logout force-clears on failure
     }
   };
+  if (isLoading) {
+    return (
+      <ScreenWrapper
+        padded
+        edges={['top']}
+        backgroundColor={colors.neutral.gray[50]}
+      >
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={colors.primary[500]} />
+        </View>
+      </ScreenWrapper>
+    );
+  }
 
   return (
     <ScreenWrapper
@@ -184,7 +211,7 @@ export const DashboardScreen = () => {
             </TextComponent>
           </View>
           <View>
-            {transactions.map(t => (
+            {Transactions.map(t => (
               <TransactionRow key={t.id} txn={t} />
             ))}
           </View>
@@ -279,6 +306,11 @@ const TransactionRow = ({ txn }: { txn: Transaction }) => {
 };
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   content: {
     gap: spacing.lg,
     paddingVertical: spacing.lg,

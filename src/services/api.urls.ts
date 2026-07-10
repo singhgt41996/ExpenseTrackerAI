@@ -1,0 +1,1 @@
+export const baseURL = 'https://appapi.wellaplus.bigcityvoucher.co.in/v1'

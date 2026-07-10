@@ -1,209 +1,102 @@
 # Next Steps
 
-> **Last Updated:** May 30, 2026 - Personal Laptop
+> **Last Updated:** July 10, 2026 - Personal Laptop
 
 ---
 
-## 🎯 Immediate Next Task (Tomorrow)
+## 🎯 Immediate Next Task
 
-### Complete Input Component Implementation
+### Wire up Delete on Dashboard
 
 **Priority:** HIGH  
-**Time:** 30-45 minutes  
-**Status:** ✅ Styles ready, just need index.tsx
+**Time:** 1-1.5 hours  
+**Status:** `useDeleteTransaction` hook already exists — just needs UI
 
-**Quick Start:**
+**Plan:**
 
-1. Open `src/components/atoms/input/index.tsx`
-2. Copy the provided implementation (already designed)
-3. Import all the style getter functions from styles.ts
-4. Add useState for focus state management
-5. Test in simulator with different variants
-
-**What's Already Done:**
-
-- ✅ types.d.ts - All types fixed and correct
-- ✅ styles.ts - Complete with all helper functions
-- ✅ Pattern established (same as Button component)
-
-**Just Copy This Implementation:**
-
-```typescript
-// The full implementation was provided above
-// with useState, all props wired, focus handling, etc.
-```
+1. Start simple: long-press on a transaction row → `Alert.alert` confirm → `deleteTransaction(id)`
+2. Upgrade to swipe-to-delete with `react-native-gesture-handler` `Swipeable` (new RN skill)
+3. Cache invalidation is already handled inside the hook — no extra work
+4. Stretch: optimistic update (`onMutate` remove from cache, rollback in `onError`) — top React Query interview topic
 
 ---
 
-## 📅 This Week's Plan (Week 1)
+## 📅 Expense Tracker — remaining work (in order)
 
-### Day 1-2: Atomic Components ✅ (In Progress)
+### 1. Delete (above) ← NEXT
 
-- [x] Text component ✅
-- [ ] Button component (Today)
-- [ ] Input component (Next)
-- [ ] Icon component
+### 2. ExpenseDetail screen (real)
 
-### Day 3-4: Navigation Setup
+- [ ] Tap transaction row → navigate with `id` param (route already typed & registered)
+- [ ] Decide: pass data via params vs read from React Query cache (`queryClient.getQueryData` / seed with `initialData`) — learn the tradeoff
+- [ ] Show full details + Edit / Delete buttons
 
-- [ ] Create `src/navigation/` files
-- [ ] RootNavigator (app entry point)
-- [ ] AuthNavigator (Login/Signup stack)
-- [ ] MainNavigator (Bottom tabs: Dashboard, Feed, Workspace, Profile)
-- [ ] Navigation types & type safety
+### 3. EditExpense screen (real)
 
-### Day 5-6: State & Screens
+- [ ] New service fn `updateTransaction` + `useUpdateTransaction` hook (the missing "U" in CRUD)
+- [ ] Reuse AddExpense form pattern, pre-filled via RHF `defaultValues`/`reset(data)`
+- [ ] Supabase `update` RLS policy may be needed (only select/insert/delete exist)
 
-- [ ] Zustand store setup (authStore, appStore)
-- [ ] React Query provider
-- [ ] Splash screen
-- [ ] Login screen UI
-- [ ] Dashboard placeholder
+### 4. Cleanup pass
 
-### Day 7: Polish & Test
+- [ ] Move `Transaction` type into `transactionService.ts`; delete dead `src/store/transactionStore.ts`
+- [ ] Keep raw `occurred_at` in mapped Transaction (currently lossy `'MMM dd'` string)
+- [ ] Rename `src/navigation/types.d.ts` → `types.ts`
+- [ ] Fix BlogsTabNavigator (icons all 'home', Home uses DashboardScreen, redundant headerLefts)
 
-- [ ] Connect navigation flow
-- [ ] Test hot reload
-- [ ] Update documentation
-- [ ] Commit and sync
+### 5. Stats tab
 
----
+- [ ] Charting lib: `victory-native` or `react-native-gifted-charts`
+- [ ] Spending by category (pie/bar) + by month (needs raw dates → cleanup #4 first)
 
-## 🚀 Next Week Preview (Week 2)
+### 6. Profile tab
 
-### Module 1: Expense Tracker Begins
+- [ ] User info, logout w/ confirm, maybe theme toggle
 
-- [ ] Supabase Google Sign-In integration
-- [ ] Protected routes logic
-- [ ] Auth state management
-- [ ] Session persistence
-- [ ] First authenticated screen
+### 7. Dashboard polish
+
+- [ ] Pull-to-refresh (`RefreshControl` + `refetch`)
+- [ ] Empty state ("no transactions yet") and error state (currently only loading handled)
 
 ---
 
-## 📝 Components Backlog
+## 🚀 After Expense Tracker
 
-### Atoms (High Priority)
-
-1. Button ← NEXT
-2. Input (TextInput wrapper)
-3. Icon (Vector Icons wrapper)
-4. Card (container with shadow)
-5. Badge (notification badge)
-6. Chip (category tag)
-7. Avatar (user profile picture)
-8. Divider (horizontal line)
-
-### Molecules (Medium Priority)
-
-1. ExpenseCard (expense list item)
-2. CategoryPicker (dropdown/modal)
-3. DateRangePicker (date selection)
-4. SearchBar (input with icon)
-5. FormField (label + input + error)
-
-### Organisms (Later)
-
-1. ExpenseForm (complete form)
-2. ExpenseList (list with sections)
-3. ChartSection (chart + legend)
-4. BottomSheet (modal from bottom)
-5. Header (navigation header)
+- [ ] **Blogs vertical slice — build solo, no hand-holding** (nav done; table + service + hooks + screens). Real test of React Query/RHF knowledge.
+- [ ] Optimistic updates on add/delete
+- [ ] `useInfiniteQuery` pagination on transaction list
+- [ ] Testing: Jest + RNTL (dashboard useMemo derivations, one hook)
+- [ ] Auth polish: react-native-keychain for tokens, biometrics
 
 ---
 
 ## 🎯 Learning Goals
 
-### This Week
+### Done
 
-- [x] Component architecture (atoms)
-- [x] TypeScript in React Native
-- [ ] Navigation patterns
-- [ ] State management basics (Zustand)
-- [ ] Server state (React Query basics)
+- [x] Zustand vs React Query (client vs server state)
+- [x] React Query queries + mutations + invalidation + key factories
+- [x] RHF + Zod end-to-end
+- [x] Axios interceptor pattern (theory + practice file)
 
-### Next Week
+### Up next
 
-- [ ] Authentication flows
-- [ ] Protected routes
-- [ ] Form validation (React Hook Form + Zod)
-- [ ] API integration (Supabase)
-- [ ] Error handling
+- [ ] Gestures (Swipeable / gesture-handler)
+- [ ] Optimistic updates + rollback
+- [ ] Charts in RN
+- [ ] Cache seeding for detail screens (list → detail without refetch)
 
 ---
 
 ## 🤔 Open Questions
 
-1. **Button Component:**
-
-   - Should button show both spinner and text when loading? (Decide: spinner only)
-   - How to handle icon-only buttons? (Allow children to be empty if icon present)
-
-2. **Navigation:**
-
-   - Nested navigators vs single navigator? (Use nested - better organization)
-   - Drawer navigation needed in Phase 0? (Yes, add for Settings)
-
-3. **State Management:**
-
-   - Split stores by feature or single store? (Split - better organization)
-   - Where to put auth logic - store or hook? (Store for state, hook for actions)
-
-4. **Forms:**
-   - Controlled vs uncontrolled inputs? (Use React Hook Form - uncontrolled)
-   - Where to validate - frontend only or backend too? (Both)
+1. ExpenseDetail data: route params vs cache read? (lean: cache read by id — teaches more)
+2. Stats needs real dates — do cleanup #4 (keep `occurred_at`) before or with Stats? (before)
+3. Delete UX: swipe vs long-press? (start long-press+Alert, upgrade to swipe)
 
 ---
 
-## 🔗 Resources to Read
+## 💾 Don't Forget (end of session)
 
-### Button Component
-
-- [ ] TouchableOpacity docs
-- [ ] Pressable docs (compare)
-- [ ] ActivityIndicator docs
-- [ ] Haptic feedback library
-
-### Navigation (Next)
-
-- [ ] React Navigation v7 docs
-- [ ] Stack Navigator guide
-- [ ] Bottom Tabs guide
-- [ ] Drawer Navigator guide
-- [ ] TypeScript with React Navigation
-
-### State Management (Next)
-
-- [ ] Zustand docs
-- [ ] React Query v5 docs
-- [ ] MMKV usage examples
-
----
-
-## 💾 Don't Forget
-
-Before ending session:
-
-- [ ] Update CURRENT_SESSION.md
-- [ ] Update progress.md with completed tasks
-- [ ] Add learnings to learnings.md
-- [ ] Update this file with new questions
-- [ ] Commit and push:
-  ```bash
-  git add .
-  git commit -m "Session: [What you did]"
-  git push origin main
-  ```
-
----
-
-## 🎯 Success Metrics
-
-**Week 1 Goal:** Complete Phase 0 (Foundation) - 100%
-**Current:** 60%
-**On Track:** Yes ✅
-
-**Daily Target:** 1-2 components or 1 major feature
-**Weekly Target:** Complete atomic components + navigation
-
-Keep up the momentum! 🚀
+- [ ] Update current-task.md + progress.md (+ learnings.md if new insight)
+- [ ] Commit & push (see UPDATE_GUIDE.md format)

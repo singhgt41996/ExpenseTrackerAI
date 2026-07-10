@@ -415,13 +415,68 @@ export const Text = ...  // ← Name collision!
 
 ---
 
+## 🌐 React Query + Supabase (July 2026)
+
+### Server State vs Client State
+
+**Learned:** July 8-10, 2026 (Transactions data layer)
+
+- Data that lives in a DB/API = **server state** → React Query (cache, loading/error flags, refetch, invalidation)
+- Data that only exists in the app (auth session, UI filters, theme) = **client state** → Zustand
+- Keeping server data in Zustand too = two sources of truth to sync manually. Don't.
+- After migrating: `transactionStore.ts` became dead code — the query cache IS the store.
+
+### queryKey must be an array (and why)
+
+- `queryKey: 'transactions'` → type error `string is not assignable to readonly unknown[]`
+- Keys are arrays because React Query matches them **by prefix**: `invalidateQueries({ queryKey: ['transactions'] })` also hits `['transactions', userId]`, `['transactions', {month}]` etc.
+- Key factory pattern (`transactionKeys.all = ['transactions'] as const`) = one source of truth; typos become compile errors; read side and invalidation side can never drift.
+- Gotcha I hit: `'transaction'` (singular) in useQuery vs `'transactions'` (plural) in invalidate = silent never-matching bug.
+
+### Two onSuccess layers in useMutation
+
+- **Hook-level** `useMutation({ onSuccess })` → runs for every caller. Put cache invalidation here (data concern, always applies).
+- **Call-level** `mutate(vars, { onSuccess })` → runs for that one invocation, AFTER hook-level. Put screen UI here (reset form, navigate).
+- Both fire, fixed order: hook-level → call-level → onSettled.
+
+### mapRow / anti-corruption layer for API responses
+
+- API/DB rows rarely match the UI type: snake_case (`occurred_at`), extra cols (`user_id`), Postgres `numeric` arrives as **string**
+- One `mapRow(row): Transaction` at the service boundary → UI never sees DB schema; column rename = 1-line fix
+- Lossy-mapping gotcha: formatting date to `'MMM dd'` at map time throws away the real timestamp — keep the raw ISO too if sorting/grouping is ever needed.
+
+### async/await mechanics (interview staple)
+
+- ANY `async` function returns a Promise — language rule, regardless of what you `return`. The `Promise<Transaction[]>` annotation just makes the contract explicit; `async` forces it.
+- Supabase query builders are **thenable** — `await supabase.from(...).select(...)` fires the request and resolves `{ data, error }`
+- Two independent promise layers: the SDK call you await inside, and the promise your own async fn returns.
+- This is exactly why async service fns plug directly into `queryFn`/`mutationFn` — React Query just needs "a function returning a Promise".
+
+### QueryClient placement bug
+
+- `new QueryClient()` INSIDE a component = new empty cache on every render. Must live at **module scope** (or useState/useRef).
+
+### react-hook-form: why handleSubmit needs a callback
+
+- RHF stores values in refs (no re-render per keystroke) → there's no live `data` variable to read in render
+- `handleSubmit(cb)` is a higher-order fn: validates via resolver, calls `cb(data)` only if valid
+- Callback can be inline (`handleSubmit(d => console.log(d))`) for debugging; named fn once it does real work.
+
+### Supabase infra errors ≠ code bugs
+
+- HTTP **521** (Cloudflare "origin down") from `*.supabase.co` = free-tier project **auto-paused**, not a code issue. Restore from dashboard, wait ~2 min.
+- Same root cause family as earlier `Network request failed`. Check dashboard/status page before debugging app code.
+
+---
+
 ## 📖 To Research Next
 
+- [ ] React Query optimistic updates (onMutate/rollback) — next up with delete
+- [ ] Swipeable / react-native-gesture-handler
+- [ ] Cache seeding for detail screens (getQueryData / initialData)
+- [ ] useInfiniteQuery pagination
 - [ ] TouchableOpacity vs Pressable performance
-- [ ] Best practices for loading states
 - [ ] Haptic feedback implementation
-- [ ] React Navigation type safety
-- [ ] React Query optimistic updates
 - [ ] MMKV vs AsyncStorage performance comparison
 
 ---

@@ -1,266 +1,59 @@
 # Current Task
 
-> **Last Updated:** May 30, 2026 - Personal Laptop  
-> **Status:** Input Component Styles Complete ✅
+> **Last Updated:** July 10, 2026 - Personal Laptop  
+> **Status:** Supabase + React Query data layer COMPLETE ✅
 
 ---
 
 ## 🎯 What I Just Finished
 
-**Component:** Input Atom - Styles  
-**Location:** `src/components/atoms/input/`  
-**Status:** 🔄 50% COMPLETE (styles.ts done, index.tsx tomorrow)
+**Feature:** Transactions data layer (Supabase + React Query)  
+**Location:** `src/services/transactionService.ts`, `src/hooks/useTransactions.ts`  
+**Status:** ✅ COMPLETE (read + add wired into UI; delete hook built but not wired)
 
 ### Files Created/Modified:
 
-- ✅ `types.d.ts` - Fixed TypeScript interface (onChangeText signature, maxLength, keyboardType)
-- ✅ `styles.ts` - Complete with getInputContainerStyles, variant/size/state styles
-- 🔄 `index.tsx` - Started, needs completion tomorrow
+- ✅ `src/services/transactionService.ts` - `fetchTransactions`, `insertTransaction`, `deleteTransactionById` + `mapRow` (DB row → app shape)
+- ✅ `src/hooks/useTransactions.ts` - `useTransactions` (query), `useAddTransaction`, `useDeleteTransaction` (mutations) + `transactionKeys` key factory
+- ✅ `App.tsx` - `QueryClientProvider` wrapping the tree; `queryClient` at **module scope** (was a bug: recreated every render)
+- ✅ `src/screens/appScreen/dashboard/index.tsx` - reads from `useTransactions()` (was Zustand store); loading spinner guard added
+- ✅ `src/screens/appScreen/addExpense/index.tsx` - submits via `useAddTransaction` mutation; `reset()` + navigate in per-call `onSuccess`; button `loadingState={isPending}`
 
-### Features Implemented:
+### Supabase side (done earlier this stretch):
 
-- ✅ Input variants (outlined, filled, underlined)
-- ✅ Input sizes (small, medium, large)
-- ✅ State styles (focus, error, success, disabled)
-- ✅ Label, helper text, error text styling
-- ✅ Icon container styles (left/right)
-- ✅ Placeholder color based on state
-- ✅ Full theme integration (colors, spacing, borderRadius, typography)
-- 🔄 Component implementation in progress
+- ✅ `transactions` table created (id, user_id default `auth.uid()`, title, category, amount, occurred_at, created_at)
+- ✅ RLS enabled with select/insert/delete policies scoped to `auth.uid()`
 
-### iOS Build Fixed Today:
+### Key concepts locked in:
 
-- ✅ MMKV v4.3.1 + react-native-nitro-modules configured
-- ✅ Reanimated v4.4.0 + react-native-worklets@0.9.1 configured
-- ✅ Podfile updated with correct dependencies
-- ✅ Xcode scheme fixed for auto-open simulator
-- ✅ Build successful on iPhone 17 Pro simulator
+- Server state (React Query cache) vs client state (Zustand) — transactions are server state
+- `queryKey` MUST be an array; prefix matching is why (`invalidateQueries(['transactions'])` hits all sub-keys)
+- Two `onSuccess` layers: hook-level (`useMutation` config → cache invalidation, always) vs call-level (`mutate(vars, { onSuccess })` → screen-specific UI like reset/navigate)
+- `async` functions always return a Promise (language rule); Supabase query builders are thenable
 
 ---
 
-## 🚀 Next Task: Complete Input Component
+## 🚀 Next Task: Wire up Delete on Dashboard
 
 **Priority:** HIGH  
-**Estimated Time:** 30-45 min (just index.tsx)  
-**Target Date:** May 31, 2026  
-**Location:** `src/components/atoms/input/`
+**Estimated Time:** 1-1.5 hours  
+**Location:** `src/screens/appScreen/dashboard/index.tsx`
 
 ### What to Build:
 
-#### 1. Complete index.tsx ✅ Styles Done!
+`useDeleteTransaction` already exists in `src/hooks/useTransactions.ts` — it's wired to nothing. Add a delete gesture to the recent-transactions list.
 
-**Already Done:**
+### Key Steps:
 
-- ✅ types.d.ts - Fixed and complete
-- ✅ styles.ts - All helper functions ready
+1. Pick a gesture: swipe-to-delete (`react-native-gesture-handler` `Swipeable`) OR long-press + confirm `Alert` (simpler, start here)
+2. Call `deleteTransaction(id)` from the gesture handler
+3. Confirm dialog before deleting (destructive action)
+4. Cache invalidation already handled by the hook's `onSuccess`
+5. Optional stretch: optimistic update via `onMutate` + rollback in `onError`
 
-**Tomorrow:**
+### Known cleanup debt (do soon, low effort):
 
-- [ ] Implement full component in index.tsx using the styles
-- [ ] Add focus state management (useState)
-- [ ] Wire up all props to TextInput
-- [ ] Test all variants (outlined, filled, underlined)
-- [ ] Test all states (focus, error, success, disabled)
-
-````
-
-#### 2. Required Features:
-
-- [ ] Label support (above input)
-- [ ] Placeholder text
-- [ ] Error state (red border + error message)
-- [ ] Success state (green border)
-- [ ] Disabled state
-- [ ] Left/right icons
-- [ ] Password visibility toggle
-- [ ] Character counter
-- [ ] Multiline support (textarea)
-- [ ] Different keyboard types (email, number, phone)
-- [ ] Auto-focus option
-- [ ] Clear button (X icon)
-
-#### 3. TypeScript Types Needed:
-
-```typescript
-interface InputProps {
-  label?: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  error?: string;
-  success?: boolean;
-  disabled?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  secureTextEntry?: boolean;
-  multiline?: boolean;
-  numberOfLines?: number;
-  keyboardType?: KeyboardTypeOptions;
-  maxLength?: number;
-  showCharCount?: boolean;
-  autoFocus?: boolean;
-  editable?: boolean;
-}
-````
-
----
-
-## 📝 Notes & Learnings from Button Component
-
-- Used `Pressable` instead of `TouchableOpacity` for better performance
-- Separated button styles by variant and size for reusability
-- Loading state automatically disables the button
-- Icon positioning handled with conditional rendering and margins
-- Text color changes based on variant (white for filled, primary color for outline)
-
----
-
-## ⏱️ Timeline Check
-
-**Week 1 Progress:** 75% complete (Day 4 of 7)
-**Status:** ✅ ON TRACK (ahead by 1 day!)
-
-**Today's Achievement:**
-
-- ✅ Button component (all features working)
-
-#### 2. Button Variants to Support
-
-- **primary** - Main actions (green background, white text)
-- **secondary** - Secondary actions (blue background, white text)
-- **outline** - Border only (transparent background, colored border)
-- **text** - No background, just text (link style)
-- **danger** - Destructive actions (red background, white text)
-
-#### 3. Button Sizes
-
-- **small** - 32px height, small padding
-- **medium** - 44px height, medium padding (default)
-- **large** - 56px height, large padding
-
-#### 4. Props to Include
-
-**Core Props:**
-
-- `variant` - Button style (primary, secondary, outline, text, danger)
-- `size` - Button size (small, medium, large)
-- `onPress` - Press handler (required)
-- `disabled` - Disabled state
-- `loading` - Show loading spinner (ActivityIndicator)
-- `fullWidth` - Take full container width (100%)
-
-**Content Props:**
-
-- `children` or `title` - Button text
-- `icon` - Optional icon (ReactNode)
-- `iconPosition` - Icon position ('left' | 'right')
-
-**Style Props:**
-
-- `style` - Custom ViewStyle
-- `textStyle` - Custom text styling
-
-**Native Props:**
-
-- `testID` - For testing
-- `accessibilityLabel` - For screen readers
-
-#### 5. Components/APIs to Use
-
-- **TouchableOpacity** or **Pressable** - For press feedback
-- **ActivityIndicator** - For loading state
-- **Your Text component** - For button label
-- **View** - For icon + text layout
-
-#### 6. Key Implementation Details
-
-**Loading State:**
-
-- Show ActivityIndicator
-- Disable button
-- Keep button width (prevent layout shift)
-
-**Disabled State:**
-
-- Reduce opacity to 0.5
-- Prevent onPress
-- Show disabled cursor
-
-**Icon Support:**
-
-- Position icon left or right of text
-- Add spacing between icon and text (8px)
-- Support icon-only buttons (no text)
-
----
-
-## 🤔 Questions to Research
-
-1. **TouchableOpacity vs Pressable?**
-
-   - Which gives better UX?
-   - Performance differences?
-   - Customization options?
-
-2. **Haptic Feedback?**
-
-   - Should buttons give haptic feedback on press?
-   - How to implement?
-
-3. **Loading State Width?**
-
-   - How to prevent button from shrinking when showing spinner?
-   - Use absolute positioning or minWidth?
-
-4. **Accessibility?**
-   - What accessibility props are important?
-   - How to announce loading state to screen readers?
-
----
-
-## 📝 Implementation Tips
-
-**Start with:**
-
-1. Create the types interface first (define all props)
-2. Create basic button variants styling
-3. Implement the component with TouchableOpacity
-4. Add loading state
-5. Add icon support
-6. Add size variants
-7. Test all combinations
-8. Write documentation
-
-**Common Patterns:**
-
-```typescript
-// Disabled or loading = can't press
-const isDisabled = disabled || loading;
-
-// Combine base styles + variant styles + size styles
-const buttonStyle = [baseStyles, variantStyles[variant], sizeStyles[size]];
-
-// Text color based on variant
-const textColor =
-  variant === 'outline' || variant === 'text'
-    ? colors.primary[500]
-    : colors.neutral.white;
-```
-
----
-
-## 📂 Files to Reference
-
-- `src/components/atoms/text/` - Your completed Text component (great reference!)
-- `src/theme/colors.ts` - Color palette
-- `src/theme/spacing.ts` - Spacing constants
-- `src/theme/shadow.ts` - Shadow styles
-
----
-
-## ⏰ Time Allocation
-
-- **30 min:** Create types and basic structure
-- **30 min:** Implement variant styles
-- **30 min:** Add loading state and icons
-- **30 min:** Documentation and testing
+- [ ] Delete `src/store/transactionStore.ts` (dead code) — first move `Transaction` type into `transactionService.ts` and fix the 2 imports (dashboard + service)
+- [ ] `Transaction.date` is a lossy display string (`'MMM dd'`) — keep raw `occurred_at` too when Stats/sorting is needed
+- [ ] Rename `src/navigation/types.d.ts` → `types.ts`
+- [ ] BlogsTabNavigator: all icons are 'home', Home tab wrongly uses DashboardScreen, redundant headerLefts

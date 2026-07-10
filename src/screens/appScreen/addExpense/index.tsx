@@ -2,7 +2,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExpenseTabParamList } from '@/navigation/types';
 import { z } from 'zod';
-import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { ScreenWrapper } from '@/components/templates/screenwrapper';
@@ -11,7 +10,7 @@ import { TextComponent } from '@/components/atoms/text';
 import { InputComponent } from '@/components/atoms/input';
 import { ButtonComponent } from '@/components/atoms/button';
 import { IconComponent } from '@/components/atoms/icon';
-import { useTransactionStore } from '@/store/transactionStore';
+import { useAddTransaction } from '@/hooks/useTransactions';
 import { borderRadius, colors, spacing } from '@/theme';
 import { CATEGORY_META, EXPENSE_CATEGORIES } from '@/constants/categories';
 
@@ -30,7 +29,7 @@ type AddExpenseNav = BottomTabNavigationProp<ExpenseTabParamList, 'AddExpense'>;
 
 export const AddExpenseScreen = () => {
   const navigation = useNavigation<AddExpenseNav>();
-  const addTransaction = useTransactionStore(state => state.addTransaction);
+  const { mutate: addTransaction, isPending } = useAddTransaction();
 
   const {
     control,
@@ -43,14 +42,20 @@ export const AddExpenseScreen = () => {
   });
 
   const onSubmit = (data: FormValues) => {
-    addTransaction({
-      title: data.title.trim(),
-      category: data.category,
-      amount: -Number(data.amount),
-      date: format(new Date(), 'MMM dd'),
-    });
-    reset();
-    navigation.navigate('Home');
+    addTransaction(
+      {
+        title: data.title.trim(),
+        category: data.category,
+        amount: -Number(data.amount),
+      },
+      {
+        // per-call callbacks: only reset + leave once the row is really saved
+        onSuccess: () => {
+          reset();
+          navigation.navigate('Home');
+        },
+      },
+    );
   };
 
   return (
@@ -166,6 +171,7 @@ export const AddExpenseScreen = () => {
             onPress={handleSubmit(onSubmit)}
             size="lg"
             fullWidth
+            loadingState={isPending}
           />
         </View>
       </View>

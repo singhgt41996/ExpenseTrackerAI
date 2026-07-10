@@ -21,13 +21,17 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { ScreenWrapper } from './src/components/templates/screenwrapper';
 import { LoaderOverlay } from './src/components/molecules/loaderOverlay';
 import { colors } from './src/theme/colors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Create once at module scope so the cache isn't wiped on every re-render.
+const queryClient = new QueryClient();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <AppContent />
+      <AppContent />
     </SafeAreaProvider>
   );
 }
@@ -45,9 +49,8 @@ const getActiveRouteName = (state?: NavigationState): string | undefined => {
 };
 
 const AppContent = () => {
-  const checkAuth = useAuthStore((state) => state.checkAuth);
-  const isLoading = useAuthStore((state) => state.isLoading);
-
+  const checkAuth = useAuthStore(state => state.checkAuth);
+  const isLoading = useAuthStore(state => state.isLoading);
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
@@ -78,15 +81,17 @@ const AppContent = () => {
   // After init, keep the app mounted and show the loader as an overlay
   return (
     <>
-      <NavigationContainer
-        onStateChange={(state) => {
-          console.log('Active route:', getActiveRouteName(state));
-          console.log('Full nav state:', JSON.stringify(state, null, 2));
-        }}
-      >
-        <RootNavigator />
-      </NavigationContainer>
-      <LoaderOverlay visible={isLoading} />
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer
+          onStateChange={state => {
+            console.log('Active route:', getActiveRouteName(state));
+            console.log('Full nav state:', JSON.stringify(state, null, 2));
+          }}
+        >
+          <RootNavigator />
+        </NavigationContainer>
+        <LoaderOverlay visible={isLoading} />
+      </QueryClientProvider>
     </>
   );
 };

@@ -1,174 +1,120 @@
 # Progress Tracker
 
-> **Last Updated:** May 30, 2026  
+> **Last Updated:** July 10, 2026  
 > **System:** Personal Laptop  
-> **Week:** 2 of 16  
-> **Timeline Status:** ✅ ON TRACK
+> **Phase:** Module 1 - Expense Tracker (core CRUD nearly done)
 
 ---
 
-## ✅ Completed This Week
+## ✅ Completed So Far
 
-### Phase 0: Foundation (75% Complete)
+### Phase 0: Foundation — ✅ COMPLETE
 
-#### ✅ Project Setup
+- [x] React Native project init, TypeScript strict, absolute imports (@/), Babel/Metro config
+- [x] Theme system (colors, typography, spacing, cross-platform shadows)
+- [x] Atomic components: Text, Button, Input, Icon, Avatar, Badge, Chip, ProgressBar, Spacer
+- [x] Molecules: SelectBox, LoaderOverlay, DatePicker (partial)
+- [x] Templates: ScreenWrapper (safe-area handling)
+- [x] iOS build fixed (MMKV v4 + nitro-modules, Reanimated v4 + worklets)
 
-- [x] React Native project initialized
-- [x] TypeScript strict mode configured
-- [x] Absolute imports (@/ paths) set up
-- [x] Babel & Metro configured
-- [x] All core dependencies installed
+### Authentication — ✅ COMPLETE
 
-#### ✅ Theme System
+- [x] Supabase project + auth (email/password)
+- [x] `authStore` (Zustand): login, signup, logout, checkAuth, error handling
+- [x] Login + Signup screens (react-hook-form + zod validation)
+- [x] RootNavigator switches Auth stack ↔ App stack on session
+- [x] Cold-start session restore with loading screen, LoaderOverlay for in-app loading
+- [x] Debugged: email verification flow, rate limits, project auto-pause (521 errors)
 
-- [x] Complete color palette (colors.ts)
-- [x] Typography variants system (typography.ts)
-- [x] Spacing & layout constants (spacing.ts)
-- [x] Cross-platform shadows (shadow.ts)
-- [x] Centralized theme exports
+### Navigation ("super-app" shell) — ✅ COMPLETE
 
-#### ✅ Components (Atomic Design)
+- [x] Typed param lists for all navigators (`src/navigation/types.d.ts`)
+- [x] AppStack: Hub → ExpenseTracker stack / Blogs stack
+- [x] ExpenseTracker stack: Tab navigator (Home/Stats/AddExpense/Profile) + non-tab screens (ExpenseDetail, EditExpense)
+- [x] Blogs stack scaffolded (tabs + BlogDetail) — screens still placeholders
+- [x] Hub screen with section cards
 
-**Text Atom** - ✅ COMPLETE (May 24, 2026)
+### Expense Tracker core — 🔄 ~70%
 
-- [x] All props implemented (variant, color, align, bold, italic)
-- [x] Text decorations (underline, strikethrough)
-- [x] Text transform (uppercase, lowercase, capitalize)
-- [x] Disabled state with proper styling
-- [x] TypeScript types with full documentation
-- [x] Styles separated in styles.ts
+- [x] Dashboard UI: summary card, quick stats, category breakdown w/ ProgressBar, recent transactions, FAB
+- [x] Category constants (`CATEGORY_META`, `EXPENSE_CATEGORIES`)
+- [x] AddExpense form: RHF + zod, category chips, keyboard handling
+- [x] **Supabase `transactions` table + RLS policies (auth.uid() scoped)**
+- [x] **`transactionService.ts`: fetch / insert / delete + row mapping**
+- [x] **React Query: `useTransactions`, `useAddTransaction`, `useDeleteTransaction` + key factory**
+- [x] **Dashboard reads live data (loading state); AddExpense writes via mutation (isPending on button)**
+- [x] QueryClient at module scope, provider in App.tsx
+- [ ] Delete wired into Dashboard UI (hook exists, no gesture yet) ← NEXT
+- [ ] ExpenseDetail / EditExpense real screens (placeholders now)
+- [ ] Stats tab (charts)
+- [ ] Profile tab
+- [ ] Cleanup: remove dead `transactionStore.ts`
 
-**Button Atom** - ✅ COMPLETE (May 25, 2026)
+### Learning topics covered (interview prep)
 
-- [x] All variants (primary, secondary, outline, text, danger)
-- [x] All sizes (small, medium, large)
-- [x] Loading state with spinner
-- [x] Icon support (left/right positioning)
-- [x] Disabled state with opacity
-- [x] Full width option
-- [x] TypeScript types with full documentation
-- [x] Styles separated in styles.ts
-
-**Input Atom** - 🔄 IN PROGRESS (May 30, 2026)
-
-- [x] TypeScript types fixed (onChangeText, maxLength, keyboardType)
-- [x] Complete styles.ts with all variants and states
-- [x] Variant styles (outlined, filled, underlined)
-- [x] Size styles (small, medium, large)
-- [x] State styles (focus, error, success, disabled)
-- [ ] Component implementation (index.tsx) - TOMORROW
-
-**iOS Build** - ✅ FIXED (May 30, 2026)
-
-- [x] MMKV upgraded to v4.3.1 with nitro-modules
-- [x] Reanimated upgraded to v4.4.0 with worklets@0.9.1
-- [x] Podfile configured correctly
-- [x] Xcode scheme auto-open simulator
-- [x] Build successful on simulator
+- [x] Zustand (client state) vs React Query (server state) — when and why
+- [x] React Query: queryKey arrays + prefix invalidation, hook-level vs call-level onSuccess, isLoading vs isFetching vs isPending
+- [x] RHF + Zod: Controller, handleSubmit as HOF, z.infer, zodResolver
+- [x] Axios interceptors theory (request auth header, 401 refresh queue) — practice file in `src/services/axios.interceptor.ts`, not integrated (no REST API to test)
+- [x] async/await + Promise mechanics; Supabase thenable query builders
+- [x] Nested navigation typing (NavigatorScreenParams, getParent)
 
 ---
 
-## 🔄 Currently Working On
-
-**Input Component** - Finishing index.tsx (Target: May 31)
-
----
-
-## ⏳ To Do This Week
-
-### Remaining Atomic Components
-
-- [x] ~~Text atom~~ ✅ Done May 24
-- [x] ~~Button atom~~ ✅ Done May 25
-- [x] Input atom styles.ts ✅ (May 30)
-- [ ] Input atom index.tsx (May 31)
-- [ ] Icon atom (vector icons wrapper)
-
-### Navigation
-
-- [ ] RootNavigator setup
-- [ ] AuthNavigator (Login/Signup stack)
-- [ ] MainNavigator (Bottom tabs)
-- [ ] Navigation types
-
-### State Management
-
-- [ ] Zustand stores configuration
-- [ ] React Query provider setup
-      █░░░] 75% ⬆️ +15% today!
-      Week 2-5: Expense Tracker [░░░░░░░░░░] 0%
-      Week 6-8: Feed [░░░░░░░░░░] 0%
-      Week 9-11: Workspace [░░░░░░░░░░] 0%
-      Week 12-13: AI Chat [░░░░░░░░░░] 0%
-      Week 14-16: Production [░░░░░░░░░░] 0%
+## 📊 Module Progress
 
 ```
-
-**Overall Project Progress:** 6% (Week 1: Day 4 of 7)
-
-## ⏱️ Timeline Analysis
-
-**Week 1 Target:** Complete Phase 0 by May 29, 2026
-**Current Date:** May 25, 2026
-**Days Remaining:** 4 days
-**Status:** ✅ ON TRACK (slightly ahead!)
-
-**Completed:**
-- Day 1 (May 22): Project setup ✅
-- Day 2 (May 23): Theme system ✅
-- Day 3 (May 24): Text component ✅
-- Day 4 (May 25): Button component ✅
-
-**Remaining:**
-- Day 5 (May 26): Input component
-- Day 6 (May 27): Icon component + Navigation
-- Day 7 (May 28-29): State Management + Testing
-
+Phase 0: Foundation        [██████████] 100%
+Module 1: Expense Tracker  [███████░░░] ~70%
+Module 2: Blogs/Feed       [█░░░░░░░░░] 10% (nav scaffold only)
+Module 3: Workspace        [░░░░░░░░░░] 0%
+Module 4: AI Chat          [░░░░░░░░░░] 0%
+Production polish          [░░░░░░░░░░] 0%
 ```
-
-Week 1: Foundation [██████░░░░] 60%
-Week 2-5: Expense Tracker [░░░░░░░░░░] 0%
-Week 6-8: Feed [░░░░░░░░░░] 0%
-Week 9-115, 2026 (Personal Laptop) - Session in progress
-
-- ✅ Completed Button atom component
-- ✅ Implemented all variants (primary, secondary, outline, text, danger)
-- ✅ Added loading states with spinner
-- ✅ Icon positioning support
-- 📝 Learned about Pressable vs TouchableOpacity
-- 📝 Set up automated progress tracking
-
-### May 2: Workspace [░░░░░░░░░░] 0%
-
-Week 12-13: AI Chat [░░░░░░░░░░] 0%
-Week 14-16: Production [░░░░░░░░░░] 0%
-
-```
-
-**Overall Project Progress:** 5%
 
 ---
 
 ## 🎯 Goals
 
-**This Week:** Complete Phase 0 (Foundation)
-**Next Week:** Start Module 1 (Expense Tracker - Auth & Basic UI)
+**Now:** Finish Expense Tracker CRUD (delete → detail → edit), then Stats.
+**Next:** Blogs vertical slice built solo (test of what's been internalized), then optimistic updates + testing.
 
 ---
 
 ## 📅 Session History
 
-### May 24, 2026 (Personal Laptop) - 2 hours
-- ✅ Completed Text atom component
-- ✅ Set up memory tracking files
-- 📝 Learned about rest parameters and TypeScript typing
+### July 10, 2026 (Personal Laptop)
 
-### May 23, 2026 (Office) - 1.5 hours
-- ✅ Created complete theme system
-- ✅ Started Text component structure
+- ✅ Finished React Query integration: query keys fixed (array + key factory), all 3 hooks working
+- ✅ Deep-dive Q&A: mapRow purpose, Promise/async mechanics, dual onSuccess, queryKey typing error
+- 🐛 Supabase 521 (Cloudflare origin down = project paused) — infra, not code
+- 📝 Decided next step: wire delete on dashboard
 
-### May 22, 2026 (Personal Laptop) - 2 hours
-- ✅ Project initialization
-- ✅ Dependency installation
-- ✅ Fixed version conflicts (MMKV, Reanimated)
-```
+### July 8-9, 2026 (Personal Laptop)
+
+- ✅ transactionService (fetch/insert/delete + mapRow), useTransactions hooks
+- ✅ Dashboard → live data w/ loading state; AddExpense → mutation w/ isPending
+- ✅ Fixed queryClient recreated-per-render bug (module scope now)
+- ✅ Supabase `transactions` table + RLS created
+- 📝 Learned server vs client state, invalidateQueries flow
+
+### Early July 2026
+
+- ✅ AddExpense form (RHF + zod), category chips, form → store → dashboard flow
+- ✅ Zustand transactionStore (now superseded by React Query)
+- ✅ Babel fix for zod v4 (`@babel/plugin-transform-export-namespace-from`)
+
+### Late June 2026
+
+- ✅ Super-app navigation: Hub + nested Expense/Blogs stacks with typed params
+- ✅ Dashboard UI built (mock data), ProgressBar atom
+- ✅ Placeholder screens for all unbuilt routes
+
+### June 2026
+
+- ✅ Auth flow complete (Supabase + Zustand + RHF/zod screens)
+- ✅ Debugged signup verification, rate limits, session restore
+
+### May 22-30, 2026
+
+- ✅ Project setup, theme system, Text/Button/Input atoms, iOS build fixes
