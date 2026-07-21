@@ -1,0 +1,19 @@
+Suggested next steps, roughly in order of learning value
+Given your stated goal (learn RN + collect interview-relevant "production-grade" patterns), here's how I'd rank what's left:
+
+Wire up delete — smallest task, but it's the "third CRUD verb" and touches a new RN pattern you haven't done yet: swipe-to-delete (e.g. react-native-gesture-handler's Swipeable, or long-press + confirm Alert). Good, contained next step using a hook you already wrote.
+Make ExpenseDetail real — tapping a transaction row should navigate there with the actual transaction (not just an id), show full details, and offer Edit/Delete actions. Teaches you the "list → detail" navigation pattern with real params, plus deciding whether to pass full data via params vs. re-fetch by id (a genuine interview-relevant tradeoff: React Query lets you seed the detail query from cache using queryClient.setQueryData or initialData from the list, avoiding a redundant fetch).
+Make EditExpense real — same form as AddExpense but pre-filled and calling an updateTransaction mutation (a 4th service function + hook you haven't built: the "U" in CRUD). This is very close to what you already know from AddExpense, so it should go fast and reinforce RHF + Zod + mutations.
+Stats tab — first real "derive insights from data" screen: spending by month/category as a chart. This is where you'd learn a charting library (react-native-svg-based, e.g. victory-native or react-native-gifted-charts) — a new but common RN skill.
+Cleanup pass (low learning value, but good hygiene before it snowballs): delete transactionStore.ts, move the Transaction type into the service, rename types.d.ts → types.ts, tidy the BlogsTabNavigator duplication you flagged earlier.
+Profile tab + logout confirmation — smallest screen, good palette-cleanser.
+Bigger, "second-project-arc" topics (once the Expense section feels done)
+These are the kind of things that would round out your "production-grade RN app" portfolio, each teaching a distinct concept:
+
+Pull-to-refresh on the dashboard (RefreshControl + refetch() from useTransactions) — trivial to add, but a very commonly-expected UX pattern.
+Optimistic updates for add/delete (update the cache immediately via onMutate, roll back onError) — this is the "advanced React Query" interview topic, natural next step after what you've built.
+Pagination/infinite scroll if your transaction list grows — useInfiniteQuery.
+Testing — Jest + React Native Testing Library for at least the dashboard's derived useMemo logic and one hook.
+Auth polish — secure token storage (react-native-keychain or expo-secure-store instead of default AsyncStorage), biometric login.
+Blogs section — currently a stub; would be a second full vertical slice to practice the whole pattern (nav + form + Supabase + React Query) end-to-end without my hand-holding, which is probably the best actual test of whether you've internalized this.
+If I had to pick one next step for you to do largely on your own (like you did with the data layer), I'd say: wire up delete on the dashboard. It reuses a hook you already have, introduces one new small RN concept (swipe or long-press gesture), and closes the loop on CRUD before you move to anything bigger. Want me to just describe what pieces are needed (like I did for the data layer), so you build it yourself, or do you want to pick a different item from the list?

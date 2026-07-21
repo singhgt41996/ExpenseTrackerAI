@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ExpenseTabParamList } from '@/navigation/types';
-import { DashboardScreen } from '@/screens/appScreen/dashboard';
-import { AddExpenseScreen } from '@/screens/appScreen/addExpense';
+import { DashboardScreen } from '@/screens/expense/dashboard';
+import { AddExpenseScreen } from '@/screens/expense/addExpense';
+import { ProfileScreen } from '@/screens/profile';
 import { PlaceholderScreen } from '@/screens/shared/placeholder';
 import { IconComponent } from '@/components/atoms/icon';
 import { colors } from '@/theme';
@@ -38,17 +39,26 @@ export const ExpenseTabNavigator = () => {
       <Tab.Screen
         name="AddExpense"
         component={AddExpenseScreen}
-        options={{
-          title: 'Add',
+        options={({ navigation }) => ({
+          title: 'Add Expense',
+          tabBarLabel: 'Add',
+          headerShown: true,
+          headerLeft: () => (
+            <IconComponent
+              name="arrow-back"
+              onPress={() => navigation.goBack()}
+            />
+          ),
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="add-circle" color={color} size={size} />
           ),
-        }}
+        })}
       />
       <Tab.Screen
         name="Profile"
-        component={PlaceholderScreen}
+        component={ProfileScreen}
         options={{
+          headerShown: true,
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="person" color={color} size={size} />
           ),

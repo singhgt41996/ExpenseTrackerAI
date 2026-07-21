@@ -1,6 +1,6 @@
 import { AuthStackParamList } from '@/navigation/types';
-import { LoginScreen } from '@/screens/authscreen/login';
-import { SignupScreen } from '@/screens/authscreen/signup';
+import { LoginScreen } from '@/screens/auth/login';
+import { SignupScreen } from '@/screens/auth/signup';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

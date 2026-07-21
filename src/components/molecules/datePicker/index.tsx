@@ -1,12 +1,13 @@
-import { View, TouchableOpacity, Modal, Platform } from 'react-native';
+import { View, TouchableOpacity, Pressable, Modal } from 'react-native';
 import React, { useState } from 'react';
+import { addMonths, getDaysInMonth, isSameDay, startOfMonth } from 'date-fns';
 import {
   DatePickerProps,
   DateFormat,
 } from '@/components/molecules/datePicker/types';
 import { TextComponent } from '@/components/atoms/text';
 import { IconComponent } from '@/components/atoms/icon';
-import { Button } from '@/components/atoms/button';
+import { ButtonComponent } from '@/components/atoms/button';
 import { colors, lightTheme } from '@/theme';
 import {
   getContainerStyles,
@@ -18,7 +19,45 @@ import {
   getModalContainerStyles,
   getModalHeaderStyles,
   getModalFooterStyles,
+  getQuickPicksRowStyles,
+  getMonthNavStyles,
+  getWeekdaysRowStyles,
+  getWeekdayTextStyles,
+  getCalendarGridStyles,
+  getDayCellContainerStyles,
+  getDayCellStyles,
+  getDayCellTextStyles,
 } from '@/components/molecules/datePicker/styles';
+
+const WEEKDAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+const MONTH_NAMES_SHORT = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 export const DatePicker = ({
   value,
@@ -40,6 +79,11 @@ export const DatePicker = ({
 }: DatePickerProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [tempDate, setTempDate] = useState<Date>(value || new Date());
+  // The month currently shown in the grid — separate from tempDate so you can
+  // browse months without changing the selection until you actually tap a day.
+  const [viewMonth, setViewMonth] = useState<Date>(
+    startOfMonth(value || new Date()),
+  );
 
   const containerStyles = getContainerStyles();
   const labelStyles = getLabelStyles(!!error);
@@ -50,6 +94,12 @@ export const DatePicker = ({
   const modalContainerStyles = getModalContainerStyles();
   const modalHeaderStyles = getModalHeaderStyles();
   const modalFooterStyles = getModalFooterStyles();
+  const quickPicksRowStyles = getQuickPicksRowStyles();
+  const monthNavStyles = getMonthNavStyles();
+  const weekdaysRowStyles = getWeekdaysRowStyles();
+  const weekdayTextStyles = getWeekdayTextStyles();
+  const calendarGridStyles = getCalendarGridStyles();
+  const dayCellContainerStyles = getDayCellContainerStyles();
 
   const formatDate = (date: Date | null, dateFormat: DateFormat): string => {
     if (!date) return placeholder;
@@ -57,36 +107,6 @@ export const DatePicker = ({
     const day = date.getDate();
     const month = date.getMonth();
     const year = date.getFullYear();
-
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const monthNamesShort = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
     const pad = (num: number) => String(num).padStart(2, '0');
 
     switch (dateFormat) {
@@ -103,21 +123,25 @@ export const DatePicker = ({
         return `${year}-${pad(month + 1)}-${pad(day)}`;
 
       case 'DD MMM YYYY':
-        return `${pad(day)} ${monthNamesShort[month]} ${year}`;
+        return `${pad(day)} ${MONTH_NAMES_SHORT[month]} ${year}`;
 
       case 'DD MMMM YYYY':
-        return `${pad(day)} ${monthNames[month]} ${year}`;
+        return `${pad(day)} ${MONTH_NAMES[month]} ${year}`;
 
       case 'MMM DD, YYYY':
-        return `${monthNamesShort[month]} ${pad(day)}, ${year}`;
+        return `${MONTH_NAMES_SHORT[month]} ${pad(day)}, ${year}`;
 
       case 'MMMM DD, YYYY':
-        return `${monthNames[month]} ${pad(day)}, ${year}`;
+        return `${MONTH_NAMES[month]} ${pad(day)}, ${year}`;
 
       default:
-        return `${pad(day)} ${monthNamesShort[month]} ${year}`;
+        return `${pad(day)} ${MONTH_NAMES_SHORT[month]} ${year}`;
     }
   };
+
+  // Header above the grid only ever needs "Month YYYY", regardless of `format`.
+  const getMonthYearLabel = (date: Date): string =>
+    `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
 
   const formatTime = (date: Date | null): string => {
     if (!date) return placeholder;
@@ -142,7 +166,9 @@ export const DatePicker = ({
 
   const handleOpen = () => {
     if (!disabled) {
-      setTempDate(value || new Date());
+      const initial = value || new Date();
+      setTempDate(initial);
+      setViewMonth(startOfMonth(initial));
       setModalVisible(true);
     }
   };
@@ -155,6 +181,39 @@ export const DatePicker = ({
   const handleCancel = () => {
     setModalVisible(false);
   };
+
+  const isBeforeMin = (date: Date): boolean =>
+    !!minimumDate && date < minimumDate;
+
+  const isAfterMax = (date: Date): boolean =>
+    !!maximumDate && date > maximumDate;
+
+  const goToToday = () => {
+    const today = new Date();
+    setTempDate(today);
+    setViewMonth(startOfMonth(today));
+  };
+
+  // Mon-first grid would need shifting by getDay(); keeping Sun-first (getDay()
+  // as-is) since that's what the WEEKDAY_LABELS row above assumes.
+  const getCalendarCells = (month: Date): (Date | null)[] => {
+    const leadingBlanks = month.getDay();
+    const daysInMonth = getDaysInMonth(month);
+    const cells: (Date | null)[] = new Array(leadingBlanks).fill(null);
+    for (let day = 1; day <= daysInMonth; day++) {
+      // Noon avoids the date shifting by a day when this later gets
+      // converted with `.toISOString()` (UTC) for storage.
+      cells.push(
+        new Date(month.getFullYear(), month.getMonth(), day, 12, 0, 0),
+      );
+    }
+    while (cells.length % 7 !== 0) cells.push(null);
+    return cells;
+  };
+  const calendarCells = getCalendarCells(viewMonth);
+  const isNextMonthDisabled = isAfterMax(
+    startOfMonth(addMonths(viewMonth, 1)),
+  );
 
   return (
     <View style={[containerStyles, style]} testID={testID}>
@@ -206,35 +265,83 @@ export const DatePicker = ({
               </TextComponent>
             </View>
 
-            {/* Simple date display - You can integrate @react-native-community/datetimepicker later */}
-            <TextComponent style={{ textAlign: 'center', marginVertical: 16 }}>
-              {mode === 'date'
-                ? formatDate(tempDate, format)
-                : mode === 'time'
-                ? formatTime(tempDate)
-                : `${formatDate(tempDate, format)} ${formatTime(tempDate)}`}
-            </TextComponent>
-            <TextComponent
-              variant="caption"
-              style={{ textAlign: 'center', marginBottom: 16 }}
-              color={lightTheme.text.secondary}
-            >
-              Install @react-native-community/datetimepicker for full date
-              picker
-            </TextComponent>
+            {/* Calendar grid — no native module required.
+                Swap for @react-native-community/datetimepicker later if you want native pickers. */}
+            <View style={monthNavStyles}>
+              <IconComponent
+                name="chevron-left"
+                family="MaterialIcons"
+                onPress={() => setViewMonth(prev => addMonths(prev, -1))}
+              />
+              <TextComponent variant="h3">
+                {getMonthYearLabel(viewMonth)}
+              </TextComponent>
+              <IconComponent
+                name="chevron-right"
+                family="MaterialIcons"
+                onPress={() => setViewMonth(prev => addMonths(prev, 1))}
+                disabled={isNextMonthDisabled}
+                color={isNextMonthDisabled ? colors.neutral.gray[300] : undefined}
+              />
+            </View>
+
+            <View style={weekdaysRowStyles}>
+              {WEEKDAY_LABELS.map((day, i) => (
+                <TextComponent key={i} style={weekdayTextStyles}>
+                  {day}
+                </TextComponent>
+              ))}
+            </View>
+
+            <View style={calendarGridStyles}>
+              {calendarCells.map((cell, i) => {
+                if (!cell) {
+                  return <View key={i} style={dayCellContainerStyles} />;
+                }
+                const cellDisabled = isBeforeMin(cell) || isAfterMax(cell);
+                const selected = isSameDay(cell, tempDate);
+                const isToday = isSameDay(cell, new Date());
+                return (
+                  <View key={i} style={dayCellContainerStyles}>
+                    <Pressable
+                      disabled={cellDisabled}
+                      onPress={() => setTempDate(cell)}
+                      style={getDayCellStyles(selected, isToday)}
+                    >
+                      <TextComponent
+                        style={getDayCellTextStyles(selected, cellDisabled)}
+                      >
+                        {cell.getDate()}
+                      </TextComponent>
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+
+            <View style={quickPicksRowStyles}>
+              <ButtonComponent
+                title="Today"
+                variant="outline"
+                size="sm"
+                onPress={goToToday}
+              />
+            </View>
 
             {/* Footer */}
             <View style={modalFooterStyles}>
-              <Button
+              <ButtonComponent
                 title="Cancel"
                 onPress={handleCancel}
-                variant="outlined"
+                variant="outline"
+                size="md"
                 style={{ flex: 1 }}
               />
-              <Button
+              <ButtonComponent
                 title="Done"
                 onPress={handleDone}
                 variant="primary"
+                size="md"
                 style={{ flex: 1 }}
               />
             </View>

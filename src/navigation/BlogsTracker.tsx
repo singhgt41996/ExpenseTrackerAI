@@ -1,7 +1,7 @@
 import { IconComponent } from '@/components/atoms/icon';
 import { BlogsTabNavigator } from '@/navigation/BlogsTabNavigator';
 import { BlogsStackParamList } from '@/navigation/types';
-import { BlogDetailScreen } from '@/screens/appScreen/blogDetail';
+import { BlogDetailScreen } from '@/screens/blogs/blogDetail';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 

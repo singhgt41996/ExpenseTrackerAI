@@ -61,3 +61,75 @@ export const getModalFooterStyles = (): ViewStyle => ({
   gap: spacing.sm,
   marginTop: spacing.md,
 });
+
+export const getStepperRowStyles = (): ViewStyle => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginVertical: spacing.md,
+});
+
+export const getQuickPicksRowStyles = (): ViewStyle => ({
+  flexDirection: 'row',
+  gap: spacing.sm,
+  marginBottom: spacing.md,
+});
+
+export const getMonthNavStyles = (): ViewStyle => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: spacing.sm,
+});
+
+export const getWeekdaysRowStyles = (): ViewStyle => ({
+  flexDirection: 'row',
+});
+
+export const getWeekdayTextStyles = (): TextStyle => ({
+  ...textVariants.caption,
+  width: `${100 / 7}%`,
+  textAlign: 'center',
+  color: lightTheme.text.secondary,
+});
+
+export const getCalendarGridStyles = (): ViewStyle => ({
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  marginBottom: spacing.sm,
+});
+
+export const getDayCellContainerStyles = (): ViewStyle => ({
+  width: `${100 / 7}%`,
+  aspectRatio: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+export const getDayCellStyles = (
+  selected: boolean,
+  isToday: boolean,
+): ViewStyle => ({
+  width: 32,
+  height: 32,
+  borderRadius: borderRadius.full,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: selected
+    ? colors.primary[600]
+    : isToday
+      ? colors.primary[50]
+      : 'transparent',
+});
+
+export const getDayCellTextStyles = (
+  selected: boolean,
+  disabled: boolean,
+): TextStyle => ({
+  ...textVariants.bodySmall,
+  color: disabled
+    ? lightTheme.text.disabled
+    : selected
+      ? colors.neutral.white
+      : lightTheme.text.primary,
+});

@@ -1,71 +1,126 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { ScreenWrapper } from '@/components/templates/screenwrapper';
 import { TextComponent } from '@/components/atoms/text';
 import { IconComponent } from '@/components/atoms/icon';
 import { AvatarComponent } from '@/components/atoms/avatar';
 import { ProgressBar } from '@/components/atoms/progressBar';
+import { InputComponent } from '@/components/atoms/input';
+import { ButtonComponent } from '@/components/atoms/button';
 import { useAuthStore } from '@/store/authStore';
-import { ExpenseTabParamList } from '@/navigation/types';
-import { useTransactions } from '@/hooks/useTransactions';
+import {
+  AppStackParamList,
+  ExpenseTabParamList,
+  ExpenseTrackerParamList,
+} from '@/navigation/types';
+import { useDeleteTransaction, useTransactions } from '@/hooks/useTransactions';
+import { useMonthlyIncome, useUpdateMonthlyIncome } from '@/hooks/useIncome';
+import { deriveCategoryTotals } from '@/utils/categoryTotals';
 import { CATEGORY_META } from '@/constants/categories';
 import { borderRadius, colors, getShadows, spacing } from '@/theme';
 import { Transaction } from '@/services/transactionService';
+import { monthKey, monthLabel } from '@/utils/date';
 
-const MONTHLY_INCOME = 100000;
-
-type DashboardNav = BottomTabNavigationProp<ExpenseTabParamList, 'Home'>;
+// Three levels deep: Tab (Home) -> ExpenseTracker stack -> AppStack (where Hub lives).
+// `navigate('Hub')` at runtime bubbles up the navigator tree on its own either way,
+// but this is what lets TypeScript know 'Hub' is actually a valid target.
+type DashboardNav = CompositeNavigationProp<
+  BottomTabNavigationProp<ExpenseTabParamList, 'Home'>,
+  CompositeNavigationProp<
+    NativeStackNavigationProp<ExpenseTrackerParamList>,
+    NativeStackNavigationProp<AppStackParamList>
+  >
+>;
 
 export const DashboardScreen = () => {
   const navigation = useNavigation<DashboardNav>();
   const user = useAuthStore(state => state.user);
-  const logout = useAuthStore(state => state.logout);
+  const currentMonth = useMemo(() => new Date(), []);
   const {
     data: Transactions = [],
     isLoading,
     isError,
     error,
     isFetching,
-  } = useTransactions();
+  } = useTransactions(monthKey(currentMonth));
+  const { mutate: deleteTransaction, isPending: isDeleting } =
+    useDeleteTransaction();
+  const { data: monthlyIncome, isLoading: isLoadingIncome } =
+    useMonthlyIncome(currentMonth);
+  const income = monthlyIncome ?? 0;
+  const { mutate: updateIncome, isPending: isSavingIncome } =
+    useUpdateMonthlyIncome();
 
-  // Derive everything from the transactions list (single source of truth).
-  const { categories, totalSpent } = useMemo(() => {
-    const totals = Transactions.filter(t => t.amount > 0).reduce<
-      Record<string, number>
-    >((accu, t) => {
-      accu[t.category] = (accu[t.category] ?? 0) + Math.abs(t.amount);
-      return accu;
-    }, {});
-    console.log(totals);
-    const total = Object.values(totals).reduce((a, b) => a + b, 0);
-    const cat = Object.entries(total).map(([key, amount]) => ({
-      key: key,
-      amount: amount,
-      ...CATEGORY_META[key],
-    }));
-    return {
-      categories: cat,
-      totalSpent: total,
-    };
-  }, []);
+  const [isEditingIncome, setIsEditingIncome] = useState(false);
+  const [incomeInput, setIncomeInput] = useState('');
 
-  const budgetLeft = MONTHLY_INCOME - totalSpent;
+  // Derive everything from the transactions list (single source of truth) —
+  // shared with the category breakdown screen via deriveCategoryTotals.
+  const { categories, totalSpent } = useMemo(
+    () => deriveCategoryTotals(Transactions),
+    [Transactions],
+  );
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch {
-      // logout force-clears on failure
-    }
+  const budgetLeft = income - totalSpent;
+
+  // Logging out now lives on the Profile tab; this just jumps back to the
+  // module switcher. Stack.navigate('Hub') pops back to the existing Hub
+  // screen already on the stack instead of pushing a duplicate.
+  const handleGoToHub = () => {
+    navigation.navigate('Hub');
   };
+
+  const handleDeleteTransaction = (txn: Transaction) => {
+    Alert.alert(
+      'Delete transaction',
+      `Remove "${txn.title}" from your transactions?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteTransaction(txn.id),
+        },
+      ],
+    );
+  };
+
+  const handleEditTransaction = (txn: Transaction) => {
+    navigation.navigate('ExpenseDetail', {
+      id: txn.id,
+      month: monthKey(currentMonth),
+    });
+  };
+
+  const startEditingIncome = () => {
+    setIncomeInput(income > 0 ? String(income) : '');
+    setIsEditingIncome(true);
+  };
+
+  const handleSaveIncome = () => {
+    const parsed = Number(incomeInput);
+    if (!incomeInput.trim() || Number.isNaN(parsed) || parsed < 0) {
+      Alert.alert('Invalid amount', 'Enter a valid monthly income.');
+      return;
+    }
+    updateIncome(
+      { monthDate: currentMonth, income: parsed },
+      { onSuccess: () => setIsEditingIncome(false) },
+    );
+  };
+
   if (isLoading) {
     return (
       <ScreenWrapper
@@ -102,15 +157,15 @@ export const DashboardScreen = () => {
                 Hi, {user?.name ?? 'there'}
               </TextComponent>
               <TextComponent variant="h3" color={colors.neutral.gray[900]}>
-                June 2026
+                {monthLabel(currentMonth)}
               </TextComponent>
             </View>
           </View>
           <IconComponent
-            name="logout"
+            name="apps"
             family="MaterialIcons"
             color={colors.neutral.gray[700]}
-            onPress={handleLogout}
+            onPress={handleGoToHub}
           />
         </View>
 
@@ -123,9 +178,25 @@ export const DashboardScreen = () => {
             ₹ {totalSpent.toLocaleString('en-IN')}
           </TextComponent>
           <View style={styles.summaryRow}>
-            <TextComponent variant="bodySmall" color={colors.primary[100]}>
-              Income ₹ {MONTHLY_INCOME.toLocaleString('en-IN')}
-            </TextComponent>
+            <View style={styles.incomeLabel}>
+              <TextComponent variant="bodySmall" color={colors.primary[100]}>
+                Income{' '}
+                {isLoadingIncome
+                  ? '...'
+                  : income > 0
+                  ? `₹ ${income.toLocaleString('en-IN')}`
+                  : 'Not set'}
+              </TextComponent>
+              {!isEditingIncome && (
+                <IconComponent
+                  name="edit"
+                  family="MaterialIcons"
+                  size="sm"
+                  color={colors.neutral.white}
+                  onPress={startEditingIncome}
+                />
+              )}
+            </View>
             <TextComponent variant="bodySmall" color={colors.primary[100]}>
               Budget left ₹ {budgetLeft.toLocaleString('en-IN')}
             </TextComponent>
@@ -133,11 +204,52 @@ export const DashboardScreen = () => {
           <View style={styles.summaryBar}>
             <ProgressBar
               value={totalSpent}
-              max={MONTHLY_INCOME}
+              max={income > 0 ? income : totalSpent || 1}
               color={colors.neutral.white}
             />
           </View>
+          {income === 0 && !isLoadingIncome && !isEditingIncome ? (
+            <TextComponent variant="caption" color={colors.primary[100]}>
+              Tap the pencil above to set your monthly income.
+            </TextComponent>
+          ) : null}
         </View>
+
+        {isEditingIncome && (
+          <View style={styles.incomeEditCard}>
+            <TextComponent
+              variant="labelMedium"
+              color={colors.neutral.gray[700]}
+            >
+              Monthly Income
+            </TextComponent>
+            <InputComponent
+              value={incomeInput}
+              onChangeText={setIncomeInput}
+              keyboardType="numeric"
+              placeholder="e.g. 100000"
+              required={false}
+              autoFocus
+            />
+            <View style={styles.incomeEditActions}>
+              <ButtonComponent
+                title="Cancel"
+                variant="outline"
+                size="md"
+                onPress={() => setIsEditingIncome(false)}
+                style={styles.incomeEditButton}
+              />
+              <ButtonComponent
+                title="Save"
+                variant="primary"
+                size="md"
+                onPress={handleSaveIncome}
+                loadingState={isSavingIncome}
+                style={styles.incomeEditButton}
+              />
+            </View>
+          </View>
+        )}
 
         {/* Quick stats */}
         <View style={styles.quickStats}>
@@ -182,9 +294,11 @@ export const DashboardScreen = () => {
             <TextComponent variant="h3" color={colors.neutral.gray[900]}>
               Spending by category
             </TextComponent>
-            <TextComponent variant="bodySmall" color={colors.primary[600]}>
-              See all
-            </TextComponent>
+            <Pressable onPress={() => navigation.navigate('CategoryBreakdown')}>
+              <TextComponent variant="bodySmall" color={colors.primary[600]}>
+                See all
+              </TextComponent>
+            </Pressable>
           </View>
           <View style={styles.categoryList}>
             {categories.map(c => (
@@ -206,13 +320,21 @@ export const DashboardScreen = () => {
             <TextComponent variant="h3" color={colors.neutral.gray[900]}>
               Recent transactions
             </TextComponent>
-            <TextComponent variant="bodySmall" color={colors.primary[600]}>
-              See all
-            </TextComponent>
+            <Pressable onPress={() => navigation.navigate('AllTransactions')}>
+              <TextComponent variant="bodySmall" color={colors.primary[600]}>
+                See all
+              </TextComponent>
+            </Pressable>
           </View>
           <View>
             {Transactions.map(t => (
-              <TransactionRow key={t.id} txn={t} />
+              <TransactionRow
+                key={t.id}
+                txn={t}
+                disabled={isDeleting}
+                onPress={() => handleEditTransaction(t)}
+                onLongPress={() => handleDeleteTransaction(t)}
+              />
             ))}
           </View>
         </View>
@@ -273,12 +395,27 @@ const CategoryRow = ({
   );
 };
 
-const TransactionRow = ({ txn }: { txn: Transaction }) => {
+const TransactionRow = ({
+  txn,
+  onPress,
+  onLongPress,
+  disabled,
+}: {
+  txn: Transaction;
+  onPress?: () => void;
+  onLongPress?: () => void;
+  disabled?: boolean;
+}) => {
   const meta = CATEGORY_META[txn.category] ?? CATEGORY_META.other;
   const isIncome = txn.amount > 0;
 
   return (
-    <View style={styles.txnRow}>
+    <Pressable
+      onPress={onPress}
+      onLongPress={onLongPress}
+      disabled={disabled}
+      style={({ pressed }) => [styles.txnRow, pressed && styles.txnRowPressed]}
+    >
       <View style={[styles.catIcon, { backgroundColor: meta.color + '22' }]}>
         <IconComponent
           name={meta.icon}
@@ -301,7 +438,7 @@ const TransactionRow = ({ txn }: { txn: Transaction }) => {
       >
         {isIncome ? '+' : '-'} ₹ {Math.abs(txn.amount).toLocaleString('en-IN')}
       </TextComponent>
-    </View>
+    </Pressable>
   );
 };
 
@@ -338,8 +475,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: spacing.sm,
   },
+  incomeLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
   summaryBar: {
     marginTop: spacing.sm,
+  },
+  incomeEditCard: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    gap: spacing.md,
+    ...getShadows('md'),
+  },
+  incomeEditActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  incomeEditButton: {
+    flex: 1,
   },
   quickStats: {
     flexDirection: 'row',
@@ -393,6 +549,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     paddingVertical: spacing.sm,
+  },
+  txnRowPressed: {
+    opacity: 0.6,
   },
   txnBody: {
     flex: 1,
