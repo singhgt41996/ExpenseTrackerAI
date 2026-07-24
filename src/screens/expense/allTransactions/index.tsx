@@ -85,7 +85,11 @@ export const AllTransactionsScreen = ({
   };
 
   return (
-    <ScreenWrapper padded edges={['bottom']} backgroundColor={colors.neutral.gray[50]}>
+    <ScreenWrapper
+      padded
+      edges={['bottom']}
+      backgroundColor={colors.neutral.gray[50]}
+    >
       {categoryMeta && (
         <View style={styles.categoryBanner}>
           <View

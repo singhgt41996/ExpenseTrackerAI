@@ -36,7 +36,7 @@ export const useAddTransaction = () => {
 
 // Update Transactions
 
-export const  useUpdateTransaction = () => {
+export const useUpdateTransaction = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateTransactionById,

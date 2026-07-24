@@ -3,9 +3,10 @@ import { ExpenseTabParamList } from '@/navigation/types';
 import { DashboardScreen } from '@/screens/expense/dashboard';
 import { AddExpenseScreen } from '@/screens/expense/addExpense';
 import { ProfileScreen } from '@/screens/profile';
-import { PlaceholderScreen } from '@/screens/shared/placeholder';
 import { IconComponent } from '@/components/atoms/icon';
 import { colors } from '@/theme';
+import StatsScreen from '@/screens/expense/stats';
+import { View } from 'react-native';
 
 const Tab = createBottomTabNavigator<ExpenseTabParamList>();
 
@@ -16,6 +17,14 @@ export const ExpenseTabNavigator = () => {
         headerShown: false,
         tabBarActiveTintColor: colors.primary[600],
         tabBarInactiveTintColor: colors.neutral.gray[400],
+        // tabBarBackground: () => (
+        //   <View
+        //     style={{ flex: 1, backgroundColor: colors.primary[900] }}
+        //   ></View>
+        // ),
+        tabBarStyle: {
+          backgroundColor: colors.primary[900],
+        },
       }}
     >
       <Tab.Screen
@@ -29,7 +38,7 @@ export const ExpenseTabNavigator = () => {
       />
       <Tab.Screen
         name="Stats"
-        component={PlaceholderScreen}
+        component={StatsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="bar-chart" color={color} size={size} />
