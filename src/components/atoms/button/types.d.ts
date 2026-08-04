@@ -1,7 +1,8 @@
 import React from 'react';
 import { TextStyle, ViewStyle } from 'react-native';
+import { ComponentSize } from '@/theme';
 
-export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonSize = ComponentSize;
 export type ButtonVariant =
   | 'primary'
   | 'secondary'
@@ -13,13 +14,13 @@ export interface ButtonProps {
   onPress: () => void;
   size: ButtonSize;
   variant: ButtonVariant;
+  title: string;
   disabled?: boolean;
   loadingState?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  children: React.ReactNode;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   fullWidth?: boolean;
-  testId?: string;
+  testID?: string;
 }

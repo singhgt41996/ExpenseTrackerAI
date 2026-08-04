@@ -77,3 +77,6 @@ yarn-error.log
 # Temporary script files
 .git-commit-msg-temp
 memories/repo/session-temp.md
+
+# Resume
+resume/

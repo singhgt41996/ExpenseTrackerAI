@@ -44,7 +44,7 @@
    Machine: [Office/Personal Laptop]
    Time: [X hours]"
 
-   git push origin main
+   git push origin ayush-dev
    ```
 
 ---
@@ -56,8 +56,7 @@
 1. **Pull latest changes**
 
    ```bash
-   git checkout develop
-   git pull origin main
+   git pull origin ayush-dev
    ```
 
 2. **Read memory files** (in this order)
@@ -67,6 +66,25 @@
    - `next-steps.md` - Week plan
 
 3. **Start coding** based on "Next Task" in current-task.md
+
+---
+
+## 🎯 Git Commands Quick Reference
+
+```bash
+# Start work
+git pull origin ayush-dev
+cat memories/repo/current-task.md
+
+# Commit work
+git add .
+git commit -m "feat: your task name"
+git push origin ayush-dev
+
+# Check status
+git status
+git log --oneline -5
+```
 
 ---
 
@@ -205,7 +223,7 @@ Machine: [Office/Personal]
 Time: [X hours]"
 
 # 3. Push
-git push origin main
+git push origin ayush-dev
 
 # 4. Updated memories/repo/ files?
 # ✅ current-task.md
@@ -217,7 +235,7 @@ git push origin main
 
 ```bash
 # 1. Pull latest
-git pull origin main
+git pull origin ayush-dev
 
 # 2. Read these files (in order):
 cat memories/repo/current-task.md
@@ -246,7 +264,7 @@ cat memories/repo/progress.md
 **Solution:**
 
 ```bash
-git pull origin main
+git pull origin ayush-dev
 # Read memory files
 # Continue from "Next Task"
 ```
@@ -260,7 +278,7 @@ git pull origin main
 git stash
 
 # 2. Pull latest
-git pull origin main
+git pull origin ayush-dev
 
 # 3. Apply your changes
 git stash pop
@@ -271,7 +289,7 @@ git stash pop
 # 5. Commit
 git add .
 git commit -m "merge: sync between machines"
-git push origin main
+git push origin ayush-dev
 ```
 
 ---

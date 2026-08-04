@@ -1,252 +1,125 @@
 # Current Task
 
-> **Last Updated:** May 25, 2026 - Personal Laptop  
-> **Status:** Button Component Complete ✅
+> **Last Updated:** July 20, 2026
+> **Status:** Expense Tracker CRUD + cleanup + Profile/Income ✅ — Stats tab is next
 
 ---
 
 ## 🎯 What I Just Finished
 
-**Component:** Button Atom  
-**Location:** `src/components/atoms/buttons/`  
+**Feature 1:** ExpenseDetail + EditExpense made real
+**Location:** `src/screens/expense/expenseDetail`, `src/screens/expense/editExpense`, `src/components/molecules/ExpenseForm`
 **Status:** ✅ COMPLETE
 
-### Files Created/Modified:
+- ✅ Extracted shared `ExpenseForm` (title/amount/date/category chips/description + zod schema) used by both Add and Edit
+- ✅ `AddExpenseScreen` uses a `formKey` remount trick to reset the form after a successful add
+- ✅ `EditExpenseScreen` finds the txn from the already-cached `useTransactions(month)` list, pre-fills `ExpenseForm`, calls new `useUpdateTransaction`
+- ✅ `updateTransactionById` added to `transactionService.ts` (had 3 bugs on the way: missing `.eq('id')`, missing `.select().single()`, camelCase key sent instead of `occurred_at` — all fixed)
+- ✅ `ExpenseDetailScreen` shows real title/amount/category/date/description + Edit/Delete icon actions
+- ✅ Fixed lossy date: `Transaction.occurredAt: Date` added alongside the display string, so Edit can round-trip the real date
+- ✅ DatePicker component fixed (`ButtonComponent` import/variant bugs) and given a working dependency-free day-stepper UI
 
-- ✅ `types.d.ts` - Complete TypeScript interface
-- ✅ `styles.ts` - getButtonStyles method with all variants
-- ✅ `index.tsx` - Component implementation with Pressable
+**Feature 2:** Month-scoped data
+**Status:** ✅ COMPLETE
 
-### Features Implemented:
+- ✅ `src/utils/date.ts`: `monthKey`, `monthLabel`, `getMonthRange`, `parseMonthKey`
+- ✅ `fetchTransactions(month)` filters by `occurred_at` half-open range; `useTransactions(month)` + `transactionKeys.byMonth(month)`
+- ✅ Dashboard now shows/queries the actual current month, not a hardcoded label
 
-- ✅ Button variants (primary, secondary, outline, text, danger)
-- ✅ Button sizes (small, medium, large)
-- ✅ Loading state with ActivityIndicator
-- ✅ Icon support (left/right positioning)
-- ✅ Disabled state
-- ✅ Full width option
-- ✅ Custom text styling
-- ✅ Test ID for testing
-- ✅ Full TypeScript support
+**Feature 3:** Cleanup debt — all 3 items done
+**Status:** ✅ COMPLETE
 
----
+- ✅ `src/store/transactionStore.ts` — was already gone, nothing referenced it (dead code had already been removed)
+- ✅ `src/navigation/types.d.ts` → renamed to `types.ts`
+- ✅ `BlogsTabNavigator` fixed: "Home" tab now renders `PlaceholderScreen` instead of the expense `DashboardScreen`; `AddBlog` icon fixed (`home` → `add-circle`); hoisted the repeated `headerShown`/`headerLeft` into the navigator's `screenOptions` instead of copy-pasting on every `Tab.Screen`
 
-## 🚀 Next Task: Input Component
+**Feature 4:** Profile screen + dynamic Monthly Income
+**Status:** ✅ COMPLETE
 
-**Priority:** HIGH  
-**Estimated Time:** 1.5-2 hours  
-**Target Date:** May 26, 2026  
-**Location:** `src/components/atoms/input/`
+- ✅ Supabase `monthly_income` table created by user (`id`, `user_id` FK, `month date`, `income numeric`, `created_at`)
+- ✅ `src/services/incomeService.ts`: `fetchIncomeForMonth` (exact month, falls back to most recent earlier month if unset) + `upsertMonthlyIncome` (upsert on `user_id, month`)
+- ✅ `src/hooks/useIncome.ts`: `useMonthlyIncome(monthDate)`, `useUpdateMonthlyIncome()` — same key-factory pattern as transactions
+- ✅ `src/screens/profile/index.tsx` — real screen: avatar/name/email, inline-editable Monthly Income card, Log Out button
+- ✅ Wired into both `ExpenseTabNavigator` and `BlogsTabNavigator`'s "Profile" tab (shared screen, not expense-specific)
+- ✅ `DashboardScreen` now reads real income via `useMonthlyIncome` instead of a hardcoded `MONTHLY_INCOME = 100000` constant; shows "Not set" + a nudge to Profile when there's no income yet
 
-### What to Build:
+### ⚠️ One thing to verify in Supabase (not done by the assistant — needs the SQL editor)
 
-#### 1. Create Folder Structure
+The `upsert(..., { onConflict: 'user_id,month' })` call in `incomeService.ts` requires an actual **unique constraint/index on `(user_id, month)`** in Postgres — column existence alone isn't enough. Run this once (idempotent, safe to re-run):
 
-```
-src/components/atoms/input/
-├── index.tsx         # Component implementation
-├── types.d.ts        # TypeScript types
-├── styles.ts         # Styling logic
-└── README.md         # Documentation (optional)
-```
+```sql
+alter table monthly_income
+  add constraint monthly_income_user_month_key unique (user_id, month);
 
-#### 2. Required Features:
+alter table monthly_income enable row level security;
 
-- [ ] Label support (above input)
-- [ ] Placeholder text
-- [ ] Error state (red border + error message)
-- [ ] Success state (green border)
-- [ ] Disabled state
-- [ ] Left/right icons
-- [ ] Password visibility toggle
-- [ ] Character counter
-- [ ] Multiline support (textarea)
-- [ ] Different keyboard types (email, number, phone)
-- [ ] Auto-focus option
-- [ ] Clear button (X icon)
-
-#### 3. TypeScript Types Needed:
-
-```typescript
-interface InputProps {
-  label?: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  error?: string;
-  success?: boolean;
-  disabled?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  secureTextEntry?: boolean;
-  multiline?: boolean;
-  numberOfLines?: number;
-  keyboardType?: KeyboardTypeOptions;
-  maxLength?: number;
-  showCharCount?: boolean;
-  autoFocus?: boolean;
-  editable?: boolean;
-}
+create policy "select own income" on monthly_income
+  for select using (auth.uid() = user_id);
+create policy "insert own income" on monthly_income
+  for insert with check (auth.uid() = user_id);
+create policy "update own income" on monthly_income
+  for update using (auth.uid() = user_id);
 ```
 
----
+If the constraint already exists, the `alter table ... add constraint` line will error ("already exists") — that's fine, it just means you're already covered; skip it and run the RLS policies if those are missing instead.
 
-## 📝 Notes & Learnings from Button Component
+### Key concepts locked in this session:
 
-- Used `Pressable` instead of `TouchableOpacity` for better performance
-- Separated button styles by variant and size for reusability
-- Loading state automatically disables the button
-- Icon positioning handled with conditional rendering and margins
-- Text color changes based on variant (white for filled, primary color for outline)
+- Upsert needs a real DB unique constraint matching `onConflict`, not just "the columns exist"
+- Fallback reads (`lt('month', x).order(...).limit(1)`) are a clean way to model "carry forward last known value" without a cron job or duplicating rows every month
+- Shared screens that don't belong to one feature (Profile) get their own top-level `src/screens/<name>/` folder, same as `hub` — not nested under `expense/`
 
 ---
 
-## ⏱️ Timeline Check
+**Feature 5:** Back-button consistency + inline income edit on Dashboard
+**Status:** ✅ COMPLETE
 
-**Week 1 Progress:** 75% complete (Day 4 of 7)
-**Status:** ✅ ON TRACK (ahead by 1 day!)
+- ✅ `AddExpense` tab now gets `headerShown: true` + back arrow (it's reached via the FAB, so it earned one despite being a tab); `EditExpense`/`ExpenseDetail` stack screens got proper `title`s so the header reads as a real header, not a floating icon
+- ✅ Removed the now-redundant in-body "Add Expense"/"Edit Expense" headings (title lives in the native header now)
+- ✅ Dashboard summary card: pencil icon next to "Income" opens an inline edit card (same `useUpdateMonthlyIncome` mutation as Profile — one source of truth)
 
-**Today's Achievement:**
+**Feature 6:** "See all" — AllTransactionsScreen
+**Status:** ✅ COMPLETE
 
-- ✅ Button component (all features working)
+- ✅ New `src/screens/expense/allTransactions/index.tsx`: month picker (prev/next via `addMonths`, next disabled once you're back at the current month), `SectionList` grouped by day, long-press to delete, tap to open `ExpenseDetail`
+- ✅ Registered as `AllTransactions` in `ExpenseTrackerParamList` + `ExpenseTracker.tsx` (back button + title)
+- ✅ Dashboard's "Recent transactions → See all" now navigates there (category section's "See all" is still inert — not part of this task)
+- 🐛 **Fixed a latent bug found while doing this:** `ExpenseDetail`/`EditExpense` used to hardcode `useTransactions(monthKey(new Date()))` — fine by coincidence when only reachable from the current month's Dashboard, but broken once AllTransactions can open a *past* month's transaction (the detail screen would query the wrong month's cache and show "not found"). Fixed by adding `month: string` to both routes' params; whoever navigates there (Dashboard or AllTransactions) now passes the month explicitly.
 
-#### 2. Button Variants to Support
+### ⚠️ Found but NOT fixed — needs your call
 
-- **primary** - Main actions (green background, white text)
-- **secondary** - Secondary actions (blue background, white text)
-- **outline** - Border only (transparent background, colored border)
-- **text** - No background, just text (link style)
-- **danger** - Destructive actions (red background, white text)
-
-#### 3. Button Sizes
-
-- **small** - 32px height, small padding
-- **medium** - 44px height, medium padding (default)
-- **large** - 56px height, large padding
-
-#### 4. Props to Include
-
-**Core Props:**
-
-- `variant` - Button style (primary, secondary, outline, text, danger)
-- `size` - Button size (small, medium, large)
-- `onPress` - Press handler (required)
-- `disabled` - Disabled state
-- `loading` - Show loading spinner (ActivityIndicator)
-- `fullWidth` - Take full container width (100%)
-
-**Content Props:**
-
-- `children` or `title` - Button text
-- `icon` - Optional icon (ReactNode)
-- `iconPosition` - Icon position ('left' | 'right')
-
-**Style Props:**
-
-- `style` - Custom ViewStyle
-- `textStyle` - Custom text styling
-
-**Native Props:**
-
-- `testID` - For testing
-- `accessibilityLabel` - For screen readers
-
-#### 5. Components/APIs to Use
-
-- **TouchableOpacity** or **Pressable** - For press feedback
-- **ActivityIndicator** - For loading state
-- **Your Text component** - For button label
-- **View** - For icon + text layout
-
-#### 6. Key Implementation Details
-
-**Loading State:**
-
-- Show ActivityIndicator
-- Disable button
-- Keep button width (prevent layout shift)
-
-**Disabled State:**
-
-- Reduce opacity to 0.5
-- Prevent onPress
-- Show disabled cursor
-
-**Icon Support:**
-
-- Position icon left or right of text
-- Add spacing between icon and text (8px)
-- Support icon-only buttons (no text)
+`DashboardScreen`'s `handleLogout` currently does `navigation.navigate('Hub')` instead of calling `logout()` from `useAuthStore` — looks like it was mid-edit. This is a real TS error (`'Hub'` isn't a screen on this navigator, it's one level up) and at runtime it wouldn't actually sign you out either. Left as-is since it looked like your own WIP; revert to `await logout()` (see git history / earlier version) or finish whatever you were trying instead.
 
 ---
 
-## 🤔 Questions to Research
+**Feature 6:** Category breakdown screen ("See all" on Dashboard's category card) — built by assistant, no new concepts.
 
-1. **TouchableOpacity vs Pressable?**
+- `src/utils/categoryTotals.ts` — extracted `deriveCategoryTotals(transactions)` from the Dashboard's inline `useMemo` (now also sorts categories by amount desc). Dashboard was refactored to call this instead of duplicating the reduce/entries logic, so the two screens' numbers can't drift apart.
+- `src/components/molecules/monthPicker/` — new reusable `<MonthPicker value onChange maximumDate />` molecule. This is the exact "‹ month label ›" + tap-to-open modal pattern that was built inline inside `AllTransactionsScreen`, pulled out so it's not copy-pasted a third time. `AllTransactionsScreen` was refactored to use it (net code reduction there).
+- `src/screens/expense/categoryBreakdown/index.tsx` (new) — month-scoped list of every category with amount, % of total spend, and a progress bar. Tapping a row navigates to `AllTransactions` pre-filtered to that category.
+- Navigation: added `CategoryBreakdown: undefined` and changed `AllTransactions: undefined` → `AllTransactions: { category?: string } | undefined` in `src/navigation/types.ts`. Registered `CategoryBreakdownScreen` in `ExpenseTracker.tsx` with a back button, same pattern as the other stack screens. Dashboard's "Spending by category → See all" text is now wrapped in a `Pressable` that navigates there.
+- `AllTransactionsScreen` now reads `route.params?.category`: if present, shows a small banner ("Showing only Food") and filters the month's transactions client-side before grouping into sections.
 
-   - Which gives better UX?
-   - Performance differences?
-   - Customization options?
+### Key concepts locked in this session:
 
-2. **Haptic Feedback?**
-
-   - Should buttons give haptic feedback on press?
-   - How to implement?
-
-3. **Loading State Width?**
-
-   - How to prevent button from shrinking when showing spinner?
-   - Use absolute positioning or minWidth?
-
-4. **Accessibility?**
-   - What accessibility props are important?
-   - How to announce loading state to screen readers?
+- When the same derivation (category totals) or the same interactive pattern (month picker) is about to be needed a second time, extract it — a shared util/component means the two screens can never silently disagree, and future screens (Stats) get it for free.
+- Optional route params (`{ category?: string } | undefined`) let one screen serve two purposes (full list vs. filtered drill-down) without a second route/screen.
 
 ---
 
-## 📝 Implementation Tips
+## 🚀 Next Task: Stats tab
 
-**Start with:**
+**Priority:** HIGH
+**Location:** `src/screens/expense/stats/` (new), `src/navigation/ExpenseTabNavigator.tsx`
 
-1. Create the types interface first (define all props)
-2. Create basic button variants styling
-3. Implement the component with TouchableOpacity
-4. Add loading state
-5. Add icon support
-6. Add size variants
-7. Test all combinations
-8. Write documentation
+### What to build (blueprint — implement yourself, ask if stuck):
 
-**Common Patterns:**
+1. New screen `src/screens/expense/stats/index.tsx`, wire into `ExpenseTabNavigator`'s "Stats" tab (replace `PlaceholderScreen`)
+2. Data: reuse `useTransactions(monthKey(currentMonth))` — no new fetching needed, everything's already in cache
+3. Pick a charting lib: `react-native-gifted-charts` (lighter) or `victory-native` — install one
+4. Two views to start:
+   - Spending by category (pie or bar) — reuse `deriveCategoryTotals` from `src/utils/categoryTotals.ts` (already extracted, don't recompute it inline again)
+   - Spending by day/week within the month (bar chart) — group `Transactions` by `format(t.occurredAt, 'yyyy-MM-dd')`
+5. Month picker to compare months: reuse `<MonthPicker />` from `src/components/molecules/monthPicker/` (already built — prev/next arrows + tap-to-open modal) instead of writing a new one.
 
-```typescript
-// Disabled or loading = can't press
-const isDisabled = disabled || loading;
-
-// Combine base styles + variant styles + size styles
-const buttonStyle = [baseStyles, variantStyles[variant], sizeStyles[size]];
-
-// Text color based on variant
-const textColor =
-  variant === 'outline' || variant === 'text'
-    ? colors.primary[500]
-    : colors.neutral.white;
-```
-
----
-
-## 📂 Files to Reference
-
-- `src/components/atoms/text/` - Your completed Text component (great reference!)
-- `src/theme/colors.ts` - Color palette
-- `src/theme/spacing.ts` - Spacing constants
-- `src/theme/shadow.ts` - Shadow styles
-
----
-
-## ⏰ Time Allocation
-
-- **30 min:** Create types and basic structure
-- **30 min:** Implement variant styles
-- **30 min:** Add loading state and icons
-- **30 min:** Documentation and testing
+NOT part of this task: cross-month trends (needs fetching multiple months' worth of transactions — bigger change, do later if you want it).

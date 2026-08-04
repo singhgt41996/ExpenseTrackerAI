@@ -1,4 +1,4 @@
-import { ButtonSize, ButtonVariant } from '@/components/atoms/buttons/types';
+import { ButtonSize, ButtonVariant } from '@/components/atoms/button/types';
 import { colors, spacing, TextVariantKey, borderRadius } from '@/theme';
 import { ViewStyle } from 'react-native';
 
@@ -34,21 +34,29 @@ const variantStyles: Record<ButtonVariant, ViewStyle> = {
   },
 };
 
+// Height fully controls the vertical size; `alignItems: 'center'` centers the
+// single line of text. Adding paddingVertical on top of a fixed height shrinks
+// the content box below the text's lineHeight and clips it (with overflow:hidden).
 const sizeStyles: Record<ButtonSize, ViewStyle> = {
-  small: {
+  xs: {
+    height: 28,
+    paddingHorizontal: spacing.sm,
+  },
+  sm: {
     height: 32,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
   },
-  medium: {
+  md: {
     height: 40,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
   },
-  large: {
+  lg: {
     height: 48,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+  },
+  xl: {
+    height: 56,
+    paddingHorizontal: spacing.xl,
   },
 };
 
@@ -61,9 +69,11 @@ const buttonTextColor: Record<ButtonVariant, string> = {
 };
 
 const buttonTextSize: Record<ButtonSize, TextVariantKey> = {
-  small: 'labelSmall',
-  medium: 'button',
-  large: 'labelLarge',
+  xs: 'labelSmall',
+  sm: 'labelSmall',
+  md: 'button',
+  lg: 'labelLarge',
+  xl: 'labelLarge',
 };
 
 const spinnerColor: Record<ButtonVariant, string> = {

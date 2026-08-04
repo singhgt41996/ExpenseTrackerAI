@@ -11,17 +11,17 @@ import {
 
 export const ButtonComponent = ({
   onPress,
-  size = 'medium',
+  size = 'md',
   variant = 'primary',
   disabled = false,
   loadingState,
   style,
   textStyle,
-  children,
+  title,
   icon,
   iconPosition = 'left',
   fullWidth = false,
-  testId,
+  testID,
 }: ButtonProps) => {
   const isDisabled = disabled || loadingState;
   const buttonStyles = getButttonStyles(variant, size, fullWidth, disabled);
@@ -34,7 +34,7 @@ export const ButtonComponent = ({
       style={[buttonStyles, style]}
       onPress={isDisabled ? undefined : onPress}
       disabled={isDisabled}
-      testID={testId}
+      testID={testID}
     >
       {icon && iconPosition === 'left' && (
         <View style={{ marginRight: 8 }}>{icon}</View>
@@ -52,7 +52,7 @@ export const ButtonComponent = ({
         style={textStyle}
         color={buttonTextColor}
       >
-        {children}
+        {title}
       </TextComponent>
       {icon && iconPosition === 'right' && (
         <View style={{ marginLeft: 8 }}>{icon}</View>

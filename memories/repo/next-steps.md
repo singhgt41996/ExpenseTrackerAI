@@ -1,183 +1,106 @@
 # Next Steps
 
-> **Last Updated:** May 24, 2026 - Personal Laptop
+> **Last Updated:** July 20, 2026 - Personal Laptop
 
 ---
 
-## 🎯 Immediate Next Task (This Session)
+## 🎯 Immediate Next Task
 
-### Build Button Component
-**Priority:** HIGH  
-**Time:** 1.5-2 hours  
-**Status:** 🔄 READY TO START
+### Stats tab
 
-**Quick Start:**
-1. Create `src/components/atoms/button/` folder
-2. Copy structure from `text/` component
-3. Start with `types.d.ts` - define ButtonProps interface
-4. Move to `styles.ts` - create getButtonStyles function
-5. Implement `index.tsx` - use TouchableOpacity
-6. Document in `README.md`
+**Priority:** HIGH
+**Status:** Blueprint given in `current-task.md` — build it yourself
 
-**Key Decisions to Make:**
-- TouchableOpacity or Pressable? (Start with TouchableOpacity - simpler)
-- Icon support - should it be required? (No, make it optional)
-- Loading state - replace text or show alongside? (Show spinner only)
+**Plan:**
+
+1. `src/screens/expense/stats/index.tsx`, wire into `ExpenseTabNavigator`'s "Stats" tab
+2. Reuse `useTransactions(monthKey(currentMonth))` — data's already cached, no new fetch
+3. Install a chart lib (`react-native-gifted-charts` or `victory-native`)
+4. Spending by category (pie/bar) — reuse `deriveCategoryTotals` from `src/utils/categoryTotals.ts` (already extracted, don't recompute inline) + spending by day within the month
+5. Month picker to compare months: reuse `<MonthPicker />` from `src/components/molecules/monthPicker/` (already built) instead of writing a new one
 
 ---
 
-## 📅 This Week's Plan (Week 1)
+## 📅 Expense Tracker — remaining work (in order)
 
-### Day 1-2: Atomic Components ✅ (In Progress)
-- [x] Text component ✅
-- [ ] Button component (Today)
-- [ ] Input component (Next)
-- [ ] Icon component
+### 1. ~~Delete~~ ✅ done
 
-### Day 3-4: Navigation Setup
-- [ ] Create `src/navigation/` files
-- [ ] RootNavigator (app entry point)
-- [ ] AuthNavigator (Login/Signup stack)
-- [ ] MainNavigator (Bottom tabs: Dashboard, Feed, Workspace, Profile)
-- [ ] Navigation types & type safety
+### 2. ~~ExpenseDetail screen (real)~~ ✅ done
 
-### Day 5-6: State & Screens
-- [ ] Zustand store setup (authStore, appStore)
-- [ ] React Query provider
-- [ ] Splash screen
-- [ ] Login screen UI
-- [ ] Dashboard placeholder
+### 3. ~~EditExpense screen (real)~~ ✅ done — shared `ExpenseForm` extracted, `useUpdateTransaction` added
 
-### Day 7: Polish & Test
-- [ ] Connect navigation flow
-- [ ] Test hot reload
-- [ ] Update documentation
-- [ ] Commit and sync
+### 4. ~~Cleanup pass~~ ✅ done
+
+- [x] Dead `src/store/transactionStore.ts` — was already gone, nothing referenced it
+- [x] Raw `occurredAt: Date` kept alongside the lossy display string
+- [x] `src/navigation/types.d.ts` → `types.ts`
+- [x] Fixed BlogsTabNavigator (Home no longer renders DashboardScreen, icons fixed, headerLeft hoisted to `screenOptions`)
+
+### 5. Stats tab ← NEXT (see above)
+
+### 6. ~~Profile tab~~ ✅ done
+
+- [x] User info (avatar/name/email), Log Out
+- [x] Monthly income now dynamic: `monthly_income` table + `incomeService.ts` + `useIncome.ts`, editable inline on Profile, read on Dashboard
+- [x] **TODO (Supabase SQL editor, not code):** confirm a real unique constraint exists on `monthly_income(user_id, month)` and that RLS select/insert/update policies are in place — see the SQL block in `current-task.md`. The upsert silently needs this; it's not enforced by the app.
+
+### 7. ~~"See all" — AllTransactionsScreen~~ ✅ done
+
+- [x] `src/screens/expense/allTransactions/index.tsx` — month picker + `SectionList` grouped by day + delete/detail
+- [x] Fixed `ExpenseDetail`/`EditExpense` to take `month` as a route param instead of hardcoding "current month" (was silently broken for past months)
+- [x] Category section's "See all" on Dashboard now opens `CategoryBreakdownScreen` (see item 7b)
+
+### 7b. ~~Category breakdown screen~~ ✅ done
+
+- [x] `src/screens/expense/categoryBreakdown/index.tsx` — month-scoped list of every category, amount + % of total + progress bar
+- [x] Tapping a category navigates to `AllTransactions` pre-filtered to it (`route.params.category`)
+- [x] Refactor along the way: `deriveCategoryTotals` util (shared with Dashboard) + `<MonthPicker />` molecule (shared with `AllTransactionsScreen`)
+
+### 8. Dashboard polish
+
+- [ ] Pull-to-refresh (`RefreshControl` + `refetch`)
+- [ ] Empty state ("no transactions yet") and error state (currently only loading handled — `isError`/`error` are already destructured in `DashboardScreen` but unused)
+- [ ] **Bug to fix:** `handleLogout` in `DashboardScreen` calls `navigation.navigate('Hub')` instead of `await logout()` — doesn't type-check and doesn't actually sign out. Looked like WIP, left untouched — revert or finish it.
 
 ---
 
-## 🚀 Next Week Preview (Week 2)
+## 🚀 After Expense Tracker
 
-### Module 1: Expense Tracker Begins
-- [ ] Supabase Google Sign-In integration
-- [ ] Protected routes logic
-- [ ] Auth state management
-- [ ] Session persistence
-- [ ] First authenticated screen
-
----
-
-## 📝 Components Backlog
-
-### Atoms (High Priority)
-1. Button ← NEXT
-2. Input (TextInput wrapper)
-3. Icon (Vector Icons wrapper)
-4. Card (container with shadow)
-5. Badge (notification badge)
-6. Chip (category tag)
-7. Avatar (user profile picture)
-8. Divider (horizontal line)
-
-### Molecules (Medium Priority)
-1. ExpenseCard (expense list item)
-2. CategoryPicker (dropdown/modal)
-3. DateRangePicker (date selection)
-4. SearchBar (input with icon)
-5. FormField (label + input + error)
-
-### Organisms (Later)
-1. ExpenseForm (complete form)
-2. ExpenseList (list with sections)
-3. ChartSection (chart + legend)
-4. BottomSheet (modal from bottom)
-5. Header (navigation header)
+- [ ] **Blogs vertical slice — build solo, no hand-holding** (nav done; table + service + hooks + screens). Real test of React Query/RHF knowledge.
+- [ ] Optimistic updates on add/delete
+- [ ] `useInfiniteQuery` pagination on transaction list
+- [ ] Testing: Jest + RNTL (dashboard useMemo derivations, one hook)
+- [ ] Auth polish: react-native-keychain for tokens, biometrics
 
 ---
 
 ## 🎯 Learning Goals
 
-### This Week
-- [x] Component architecture (atoms)
-- [x] TypeScript in React Native
-- [ ] Navigation patterns
-- [ ] State management basics (Zustand)
-- [ ] Server state (React Query basics)
+### Done
 
-### Next Week
-- [ ] Authentication flows
-- [ ] Protected routes
-- [ ] Form validation (React Hook Form + Zod)
-- [ ] API integration (Supabase)
-- [ ] Error handling
+- [x] Zustand vs React Query (client vs server state)
+- [x] React Query queries + mutations + invalidation + key factories
+- [x] RHF + Zod end-to-end
+- [x] Axios interceptor pattern (theory + practice file)
+
+### Up next
+
+- [ ] Gestures (Swipeable / gesture-handler)
+- [ ] Optimistic updates + rollback
+- [ ] Charts in RN
+- [ ] Cache seeding for detail screens (list → detail without refetch)
 
 ---
 
 ## 🤔 Open Questions
 
-1. **Button Component:**
-   - Should button show both spinner and text when loading? (Decide: spinner only)
-   - How to handle icon-only buttons? (Allow children to be empty if icon present)
-
-2. **Navigation:**
-   - Nested navigators vs single navigator? (Use nested - better organization)
-   - Drawer navigation needed in Phase 0? (Yes, add for Settings)
-
-3. **State Management:**
-   - Split stores by feature or single store? (Split - better organization)
-   - Where to put auth logic - store or hook? (Store for state, hook for actions)
-
-4. **Forms:**
-   - Controlled vs uncontrolled inputs? (Use React Hook Form - uncontrolled)
-   - Where to validate - frontend only or backend too? (Both)
+1. ExpenseDetail data: route params vs cache read? (lean: cache read by id — teaches more)
+2. Stats needs real dates — do cleanup #4 (keep `occurred_at`) before or with Stats? (before)
+3. Delete UX: swipe vs long-press? (start long-press+Alert, upgrade to swipe)
 
 ---
 
-## 🔗 Resources to Read
+## 💾 Don't Forget (end of session)
 
-### Button Component
-- [ ] TouchableOpacity docs
-- [ ] Pressable docs (compare)
-- [ ] ActivityIndicator docs
-- [ ] Haptic feedback library
-
-### Navigation (Next)
-- [ ] React Navigation v7 docs
-- [ ] Stack Navigator guide
-- [ ] Bottom Tabs guide
-- [ ] Drawer Navigator guide
-- [ ] TypeScript with React Navigation
-
-### State Management (Next)
-- [ ] Zustand docs
-- [ ] React Query v5 docs
-- [ ] MMKV usage examples
-
----
-
-## 💾 Don't Forget
-
-Before ending session:
-- [ ] Update CURRENT_SESSION.md
-- [ ] Update progress.md with completed tasks
-- [ ] Add learnings to learnings.md
-- [ ] Update this file with new questions
-- [ ] Commit and push:
-  ```bash
-  git add .
-  git commit -m "Session: [What you did]"
-  git push origin main
-  ```
-
----
-
-## 🎯 Success Metrics
-
-**Week 1 Goal:** Complete Phase 0 (Foundation) - 100%
-**Current:** 60%
-**On Track:** Yes ✅
-
-**Daily Target:** 1-2 components or 1 major feature
-**Weekly Target:** Complete atomic components + navigation
-
-Keep up the momentum! 🚀
+- [ ] Update current-task.md + progress.md (+ learnings.md if new insight)
+- [ ] Commit & push (see UPDATE_GUIDE.md format)
