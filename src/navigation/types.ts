@@ -25,7 +25,6 @@ export type BlogsStackParamList = {
 export type BlogsTabParamList = {
   Home: undefined; // Blogs feed
   AddBlog: undefined;
-  Stats: undefined;
   Profile: undefined;
 };
 

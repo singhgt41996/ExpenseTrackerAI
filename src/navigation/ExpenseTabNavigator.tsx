@@ -1,12 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ExpenseTabParamList } from '@/navigation/types';
-import { DashboardScreen } from '@/screens/expense/dashboard';
+import { HomeScreen } from '@/screens/expense/home';
 import { AddExpenseScreen } from '@/screens/expense/addExpense';
 import { ProfileScreen } from '@/screens/profile';
 import { IconComponent } from '@/components/atoms/icon';
 import { colors } from '@/theme';
 import StatsScreen from '@/screens/expense/stats';
-import { View } from 'react-native';
 
 const Tab = createBottomTabNavigator<ExpenseTabParamList>();
 
@@ -29,7 +28,7 @@ export const ExpenseTabNavigator = () => {
     >
       <Tab.Screen
         name="Home"
-        component={DashboardScreen}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="home" color={color} size={size} />

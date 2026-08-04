@@ -1,5 +1,5 @@
 import { View, TextInput } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { TextAreaProps } from '@/components/molecules/textarea/types';
 import { TextComponent } from '@/components/atoms/text';
 import { colors, lightTheme } from '@/theme';
@@ -16,7 +16,8 @@ import {
 export const TextArea = ({
   value,
   onChangeText,
-
+  onBlur,
+  onFocus,
   placeholder = 'Enter text...',
   label,
   error,
@@ -31,13 +32,26 @@ export const TextArea = ({
   style,
   testID,
 }: TextAreaProps) => {
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+
   const containerStyles = getContainerStyles();
   const labelStyles = getLabelStyles(!!error);
-  const textAreaStyles = getTextAreaStyles(!!error, disabled, rows);
+  const textAreaStyles = getTextAreaStyles(!!error, disabled, rows, isFocused);
   const textStyles = getTextStyles();
   const errorTextStyles = getErrorTextStyles();
   const helperTextStyles = getHelperTextStyles();
   const charCountStyles = getCharCountStyles();
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    console.log('Text Area Focused');
+    onFocus?.();
+  };
+  const handleBlur = () => {
+    setIsFocused(false);
+    console.log('Text Area Blurred');
+    onBlur?.();
+  };
 
   return (
     <View style={[containerStyles, style]} testID={testID}>
@@ -55,6 +69,8 @@ export const TextArea = ({
       <TextInput
         value={value}
         onChangeText={onChangeText}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         placeholder={placeholder}
         placeholderTextColor={lightTheme.text.disabled}
         editable={!disabled}

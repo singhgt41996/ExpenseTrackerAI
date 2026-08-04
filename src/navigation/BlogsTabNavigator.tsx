@@ -1,28 +1,27 @@
 import { IconComponent } from '@/components/atoms/icon';
 import { BlogsTabParamList } from '@/navigation/types';
-import { PlaceholderScreen } from '@/screens/shared/placeholder';
 import { ProfileScreen } from '@/screens/profile';
 import { colors } from '@/theme/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
+import { BlogsHomeScreen } from '@/screens/blogs/home';
+import { AddBlogsScreen } from '@/screens/blogs/addBlogs';
 
 const Tab = createBottomTabNavigator<BlogsTabParamList>();
 
 export const BlogsTabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ navigation }) => ({
-        headerShown: true,
-        tabBarActiveTintColor: colors.primary[600],
-        tabBarInactiveTintColor: colors.neutral.gray[400],
-        headerLeft: () => (
-          <IconComponent name="arrow-back" onPress={() => navigation.goBack()} />
-        ),
-      })}
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.secondary[400],
+        tabBarInactiveTintColor: colors.secondary[50],
+        tabBarStyle: { backgroundColor: colors.secondary[600] },
+      }}
     >
       <Tab.Screen
         name="Home"
-        component={PlaceholderScreen}
+        component={BlogsHomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="home" color={color} size={size} />
@@ -31,22 +30,21 @@ export const BlogsTabNavigator = () => {
       />
       <Tab.Screen
         name="AddBlog"
-        component={PlaceholderScreen}
-        options={{
-          title: 'Add',
+        component={AddBlogsScreen}
+        options={({ navigation }) => ({
+          headerShown: true,
+          title: 'Create Blog',
+          tabBarLabel: 'Add',
+          headerLeft: () => (
+            <IconComponent
+              name="arrow-back"
+              onPress={() => navigation.goBack()}
+            />
+          ),
           tabBarIcon: ({ color, size }) => (
             <IconComponent name="add-circle" color={color} size={size} />
           ),
-        }}
-      />
-      <Tab.Screen
-        name="Stats"
-        component={PlaceholderScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconComponent name="bar-chart" color={color} size={size} />
-          ),
-        }}
+        })}
       />
       <Tab.Screen
         name="Profile"

@@ -16,6 +16,7 @@ export const BlogsTracker = () => {
         component={BlogDetailScreen}
         options={({ navigation }) => ({
           headerShown: true,
+          title: 'Blog Detail',
           headerLeft: () => (
             <IconComponent
               name="arrow-back"

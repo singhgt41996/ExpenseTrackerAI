@@ -3,7 +3,8 @@ import { ViewStyle, TextStyle } from 'react-native';
 export interface TextAreaProps {
   value: string;
   onChangeText: (text: string) => void;
-
+  onBlur?: () => void;
+  onFocus?: () => void;
   placeholder?: string;
   label?: string;
   error?: string;

@@ -6,6 +6,7 @@ import {
   Pressable,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -32,7 +33,6 @@ import { CATEGORY_META } from '@/constants/categories';
 import { borderRadius, colors, getShadows, spacing } from '@/theme';
 import { Transaction } from '@/services/transactionService';
 import { monthKey, monthLabel } from '@/utils/date';
-
 // Three levels deep: Tab (Home) -> ExpenseTracker stack -> AppStack (where Hub lives).
 // `navigate('Hub')` at runtime bubbles up the navigator tree on its own either way,
 // but this is what lets TypeScript know 'Hub' is actually a valid target.
@@ -44,7 +44,7 @@ type DashboardNav = CompositeNavigationProp<
   >
 >;
 
-export const DashboardScreen = () => {
+export const HomeScreen = () => {
   const navigation = useNavigation<DashboardNav>();
   const user = useAuthStore(state => state.user);
   const currentMonth = useMemo(() => new Date(), []);
@@ -54,11 +54,15 @@ export const DashboardScreen = () => {
     isError,
     error,
     isFetching,
+    refetch,
   } = useTransactions(monthKey(currentMonth));
   const { mutate: deleteTransaction, isPending: isDeleting } =
     useDeleteTransaction();
-  const { data: monthlyIncome, isLoading: isLoadingIncome } =
-    useMonthlyIncome(currentMonth);
+  const {
+    data: monthlyIncome,
+    isLoading: isLoadingIncome,
+    refetch: refetchIncome,
+  } = useMonthlyIncome(currentMonth);
   const income = monthlyIncome ?? 0;
   const { mutate: updateIncome, isPending: isSavingIncome } =
     useUpdateMonthlyIncome();
@@ -144,6 +148,16 @@ export const DashboardScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching && !isLoading}
+            onRefresh={() => {
+              refetch(), refetchIncome();
+            }}
+            tintColor={colors.primary[500]}
+            colors={[colors.primary[500]]}
+          />
+        }
       >
         {/* Header */}
         <View style={styles.header}>
@@ -327,15 +341,21 @@ export const DashboardScreen = () => {
             </Pressable>
           </View>
           <View>
-            {Transactions.map(t => (
-              <TransactionRow
-                key={t.id}
-                txn={t}
-                disabled={isDeleting}
-                onPress={() => handleEditTransaction(t)}
-                onLongPress={() => handleDeleteTransaction(t)}
-              />
-            ))}
+            {!isError ? (
+              Transactions.map(t => (
+                <TransactionRow
+                  key={t.id}
+                  txn={t}
+                  disabled={isDeleting}
+                  onPress={() => handleEditTransaction(t)}
+                  onLongPress={() => handleDeleteTransaction(t)}
+                />
+              ))
+            ) : (
+              <TextComponent variant="bodymedium" color={colors.error.light}>
+                {error.message}
+              </TextComponent>
+            )}
           </View>
         </View>
       </ScrollView>
